@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkhuangmh_blog=self.webpackChunkhuangmh_blog||[]).push([[9],{6674:e=>{e.exports=JSON.parse('{"title":"Prettier","keywords":["Prettier"],"slug":"/","permalink":"/docs/","navigation":{"next":{"title":"\u4ec0\u4e48\u662f Prettier\uff1f","permalink":"/docs/prettier/what-is-prettier"}}}')}}]);
