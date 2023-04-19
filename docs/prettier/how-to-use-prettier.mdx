@@ -1,0 +1,118 @@
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import Link from "@docusaurus/Link";
+
+# 如何使用 Prettier?
+
+```mdx-code-block
+<Tabs>
+<TabItem value="npm" label="npm">
+```
+
+```bash
+mkdir learn-prettier && cd learn-prettier
+
+npm init -y
+
+npm install prettier --save-dev --save-exact
+
+# 在learn-prettier/src目录下创建index.js文件，然后自己写一些JS代码
+
+npx prettier --write src/index.js
+```
+
+```mdx-code-block
+</TabItem>
+<TabItem value="yarn" label="yarn">
+```
+
+```bash
+mkdir learn-prettier && cd learn-prettier
+
+yarn init -y
+
+yarn add prettier --dev --exact
+
+#  在learn-prettier/src目录下创建index.js文件，然后自己写一些JS代码
+
+yarn prettier --write src/index.js
+```
+
+```mdx-code-block
+</TabItem>
+</Tabs>
+```
+
+# 创建自定义配置文件
+
+- 在项目里面的根目录下 创建`.prettierrc.js`文件
+- 配置具体可以参考 <Link to='/docs/prettier/prettier-config'>Prettier 配置</Link>
+- 在项目里面的根目录下 创建`.prettierignore`文件 忽略这些文件的格式化
+
+```js title="/src/.prettierrc.js"
+modules.exports = {
+  // ...里面填入自定义配置
+};
+```
+
+# 整合 VS Code
+
+- 安装 [Prettier Extention](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+
+## 手动格式化
+
+```mdx-code-block
+<Tabs>
+<TabItem value="Mac" label="Mac">
+```
+
+```bash
+CMD + Shift + P
+
+Format Document
+```
+
+```mdx-code-block
+</TabItem>
+<TabItem value="yarn" label="yarn">
+```
+
+```bash
+Ctlr + Shift + P
+
+Format Document
+```
+
+```mdx-code-block
+</TabItem>
+</Tabs>
+```
+
+# 保存文件时自动格式化
+
+```mdx-code-block
+<Tabs>
+<TabItem value="Mac" label="Mac">
+```
+
+```bash
+CMD + ,
+
+# 勾选Text-editor 下的 Format On Save
+```
+
+```mdx-code-block
+</TabItem>
+<TabItem value="yarn" label="yarn">
+```
+
+```bash
+Ctlr + ,
+
+# 勾选Text-editor 下的 Format On Save
+```
+
+```mdx-code-block
+</TabItem>
+</Tabs>
+```

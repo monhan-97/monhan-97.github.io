@@ -26,7 +26,11 @@ const sidebars = {
         slug: "/",
         keywords: ["Prettier"],
       },
-      items: ["prettier/what-is-prettier", "prettier/prettier-config"],
+      items: [
+        "prettier/what-is-prettier",
+        "prettier/prettier-config",
+        "prettier/how-to-use-prettier",
+      ],
     },
   ],
 };
