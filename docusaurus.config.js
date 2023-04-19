@@ -126,6 +126,16 @@ const config = {
           hideable: true,
         },
       },
+
+      algolia: {
+        // The application ID provided by Algolia
+        appId: "5FS9YODLSF",
+
+        // Public API key: it is safe to commit it
+        apiKey: "c6f50bd76d0edddb804ab0a3f1a296a4",
+
+        indexName: "monhan-97io",
+      },
     }),
 };
 
