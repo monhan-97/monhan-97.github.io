@@ -32,6 +32,11 @@ const sidebars = {
         "prettier/how-to-use-prettier",
       ],
     },
+    {
+      type: "category",
+      label: "HTML 知识点",
+      items: ["html/html-semantics"],
+    },
   ],
 };
 
