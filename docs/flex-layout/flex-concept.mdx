@@ -1,0 +1,28 @@
+# Flex 基本概念
+
+Flexible Box 模型 是一种一维的布局模型, 给 使用到 flex 布局的 的子元素之间提供了强大的空间分布和对齐能力
+
+任何一个容器都可以指定为 Flex 布局。
+
+```html
+.box{ display:flex }
+```
+
+行内元素也可以使用 flex 布局
+
+```html
+.box{ display:inlin-flex }
+```
+
+注意，设为 Flex 布局以后，子元素的` float`、`clear` 和 `vertical-align` 属性将失效。
+
+## flex 和 inline-flex 区别
+
+- `display:flex` Flex 容器本身的块属性不会改变 父容器内的子元素变成行内块元素的属性
+- `display:inline-flex` Flex 容器与子元素均改变为 行内块元素的属性 并且自动换行
+
+## 基本概念
+
+使用 flex 布局的时候 默认会有两根轴线 `主轴（main axis`）和 垂直的`交叉轴（cross axis）` flex 的子成员默认按照主轴排列
+
+![flex-container](./images/bg2015071004.png)
