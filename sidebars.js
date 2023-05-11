@@ -24,7 +24,7 @@ const sidebars = {
       link: {
         type: "generated-index",
         slug: "/",
-        keywords: ["Prettier"],
+        keywords: ["prettier-config"],
       },
       items: [
         "prettier/what-is-prettier",
@@ -38,7 +38,7 @@ const sidebars = {
       link: {
         type: "generated-index",
         slug: "/html",
-        keywords: ["html"],
+        keywords: ["html-semantics"],
       },
       items: ["html/html-semantics"],
     },
@@ -48,9 +48,19 @@ const sidebars = {
       link: {
         type: "generated-index",
         slug: "/flex-layout",
-        keywords: ["Flex"],
+        keywords: ["flex-layout"],
       },
       items: ["flex-layout/flex-concept", "flex-layout/flex-container"],
+    },
+    {
+      type: "category",
+      label: "技术分享",
+      link: {
+        type: "generated-index",
+        slug: "/share",
+        keywords: ["react-18-features"],
+      },
+      items: ["share/react-18-features"],
     },
   ],
 };
