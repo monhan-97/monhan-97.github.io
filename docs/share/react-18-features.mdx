@@ -1,5 +1,7 @@
 import BrowserWindow from "@site/src/components/BrowserWindow";
 import UseSyncExternalStoreDemo from "@site/src/demo/useSyncExternalStore";
+import HeavyComponentUpdate from "@site/src/demo/HeavyComponentUpdate.tsx";
+import HeavyComponentUpdateWithTransition from "@site/src/demo/HeavyComponentUpdateWithTransition.tsx";
 
 # React18
 
@@ -235,3 +237,64 @@ const snapshot = useSyncExternalStore(
   服务器快照在客户端和服务器之间必须是相同的 否则在服务端渲染组件将引发错误
 
 <UseSyncExternalStoreDemo />
+
+## useTransition
+
+渲染的过程中 有些 UI 需要尽快更新(比如:input 输入框,下拉选择框) 而其他的 UI 渲染可以有较低的优先级(比如:过滤列表)
+
+从 React 18 开始 你可以开启 `concurrent` 模式 - 允许将 UI 标记为高低优先级 或者可中断的低优先级
+
+默认情况下 React 中的所有更新都是紧急的 当快速更新因大量更新而减慢的时候 可能会产生问题
+
+我们可以使用 `useTransition` 这个 hook 将 UI 更新为低优先级 对于大量非紧急的更新特别有用
+
+### 参数
+
+```jsx
+const [isPending, startTransition] = useTransition();
+```
+
+- isPending:`transition` 是否在 `pending`
+- startTransition(callback): 允许在回调中把 UI 的更新状态标记为 `transition`
+
+使用 useTransition 的时候 需要确保启用并发模式
+
+```jsx
+import { useTransition } from "react";
+
+function MyComponent() {
+  // highlight-start
+  const [isPending, startTransition] = useTransition();
+  // highlight-end
+  // ...
+
+  const someEventHandler = (event) => {
+    // highlight-start
+    startTransition(() => {
+      // updates as transitions
+      setValue(event.target.value);
+    });
+    // highlight-end
+  };
+
+  return <HeavyComponent value={value} />;
+}
+```
+
+## Heavy UI updates as urgent
+
+紧急的大量 UI 更新 是比较影响用户体验的
+
+<HeavyComponentUpdate />
+
+在快速输入查询的时候 我们可以注意到打字滞后 并且 UI 在明显的时间段内 感觉没有响应
+
+在用户输入的时候更新是一项快速执行的紧急任务 但是通过突出匹配项来更新列表是一项繁重但并不经济的任务
+
+## Heavy UI updates as transitions
+
+<HeavyComponentUpdateWithTransition />
+
+使用 useTransition React 将紧急任务的呈现（在用户键入时更新输入字段）与非紧急任务（突出显示列表中的查询）分开。这种方法提供了更好的用户体验。
+
+React 中的并发模式可以让将紧急任务与非紧急任务分开 使 UI 更新更加人性化
