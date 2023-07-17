@@ -60,7 +60,7 @@ const sidebars = {
         slug: "/share",
         keywords: ["react-18-features"],
       },
-      items: ["share/react-18-features"],
+      items: ["share/react-18-features", "share/redux-useStore"],
     },
   ],
 };
