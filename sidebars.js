@@ -54,6 +54,16 @@ const sidebars = {
     },
     {
       type: "category",
+      label: "事件循环",
+      link: {
+        type: "generated-index",
+        slug: "/event-loop",
+        keywords: ["event-loop"],
+      },
+      items: ["event-loop/process-thread"],
+    },
+    {
+      type: "category",
       label: "技术分享",
       link: {
         type: "generated-index",
