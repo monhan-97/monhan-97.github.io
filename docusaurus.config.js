@@ -27,6 +27,8 @@ const config = {
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
 
+  trailingSlash: false,
+
   presets: [
     [
       "classic",
@@ -46,6 +48,8 @@ const config = {
       }),
     ],
   ],
+
+  themes: ["@docusaurus/theme-live-codeblock"],
 
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */

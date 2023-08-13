@@ -64,6 +64,8 @@ const sidebars = {
         "event-loop/process-thread",
         "event-loop/main-thread",
         "event-loop/what-is-async",
+        "event-loop/block-render",
+        "event-loop/task-priority",
       ],
     },
     {
