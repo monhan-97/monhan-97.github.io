@@ -60,7 +60,7 @@ const sidebars = {
         slug: "/event-loop",
         keywords: ["event-loop"],
       },
-      items: ["event-loop/process-thread"],
+      items: ["event-loop/process-thread", "event-loop/main-thread"],
     },
     {
       type: "category",
