@@ -60,7 +60,11 @@ const sidebars = {
         slug: "/event-loop",
         keywords: ["event-loop"],
       },
-      items: ["event-loop/process-thread", "event-loop/main-thread"],
+      items: [
+        "event-loop/process-thread",
+        "event-loop/main-thread",
+        "event-loop/what-is-async",
+      ],
     },
     {
       type: "category",
