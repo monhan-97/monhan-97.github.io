@@ -66,6 +66,7 @@ const sidebars = {
         "event-loop/what-is-async",
         "event-loop/block-render",
         "event-loop/task-priority",
+        "event-loop/test-case",
       ],
     },
     {
