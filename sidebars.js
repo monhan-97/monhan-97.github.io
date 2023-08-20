@@ -58,7 +58,7 @@ const sidebars = {
       link: {
         type: "generated-index",
         slug: "/event-loop",
-        keywords: ["event-loop"],
+        keywords: ["event-loop", "事件循环"],
       },
       items: [
         "event-loop/process-thread",
@@ -68,6 +68,16 @@ const sidebars = {
         "event-loop/task-priority",
         "event-loop/test-case",
       ],
+    },
+    {
+      type: "category",
+      label: "Promise",
+      link: {
+        type: "generated-index",
+        slug: "/promise",
+        keywords: ["Promise A+规范"],
+      },
+      items: ["Promise/promise-standard", "Promise/promise-api"],
     },
     {
       type: "category",
