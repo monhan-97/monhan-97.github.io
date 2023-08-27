@@ -77,7 +77,13 @@ const sidebars = {
         slug: "/promise",
         keywords: ["Promise A+规范"],
       },
-      items: ["Promise/promise-standard", "Promise/promise-api"],
+      items: [
+        "Promise/promise-standard",
+        "Promise/promise-api",
+        "Promise/static-method",
+        "Promise/async-await",
+        "Promise/test-case",
+      ],
     },
     {
       type: "category",
