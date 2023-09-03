@@ -82,6 +82,7 @@ const sidebars = {
         "Promise/promise-api",
         "Promise/static-method",
         "Promise/async-await",
+        "Promise/promise-implement",
         "Promise/test-case",
       ],
     },
