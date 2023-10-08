@@ -88,6 +88,16 @@ const sidebars = {
     },
     {
       type: "category",
+      label: "Redux",
+      link: {
+        type: "generated-index",
+        slug: "/redux",
+        keywords: ["Redux"],
+      },
+      items: ["Redux/introduce"],
+    },
+    {
+      type: "category",
       label: "技术分享",
       link: {
         type: "generated-index",
