@@ -1,5 +1,7 @@
 # Redux 简介
 
+## Redux 三大原则
+
 - 单一数据源:整个应用程序的全局状态 存储在全局的 `store` 对象 中。
 - store 只是只读的:改变 `store` 的唯一方式就是通过创建一个 `action`(描述更改操作的对象) 然后通过 `dispatch` 执行对应的 `reducer` 更新 `store`
 - 使用 reducer 执行修改: reducer 必须要是一个纯函数不能包含副作用 返回一个不可变的状态

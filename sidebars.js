@@ -94,7 +94,7 @@ const sidebars = {
         slug: "/redux",
         keywords: ["Redux"],
       },
-      items: ["Redux/introduce"],
+      items: ["Redux/introduce", "Redux/createStore"],
     },
     {
       type: "category",
