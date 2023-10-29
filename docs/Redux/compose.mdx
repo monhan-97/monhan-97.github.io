@@ -1,0 +1,29 @@
+# compose
+
+# compose(组合) 简介
+
+- 从右到左把接收到的函数合成为一个最终函数
+- 右边函数的返回值将作为一个参数提供给它左边的函数。即 `compose(funcA, funcB, funcC)` 变为 `compose(funcA(funcB(funcC())))`
+
+```javascript
+function compose(...funcs) {
+  if (funcs.length === 0) {
+    return (arg) => arg;
+  }
+
+  if (funcs.length === 1) {
+    return funcs[0];
+  }
+
+  /**
+   * 1、previousValue （上一次调用回调返回的值，或者是提供的初始值（initialValue））
+   * 2、currentValue （数组中当前被处理的元素）
+   */
+
+  return funcs.reduce(
+    (a, b) =>
+      (...args) =>
+        a(b(...args))
+  );
+}
+```
