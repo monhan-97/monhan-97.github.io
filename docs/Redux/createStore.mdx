@@ -1,4 +1,4 @@
-import ReduxCounterVanilla from "../../src/demo/ReduxCounterVanilla";
+import CreateStore from "../../src/demo/createStore";
 
 # createStrore
 
@@ -8,34 +8,46 @@ import ReduxCounterVanilla from "../../src/demo/ReduxCounterVanilla";
 - 应用中不要创建多个 `store` 可以使用 `combineReducers` 来把多个 reducer 创建成一个根 reduce
 - 当 `store` 创建完毕后 Redux 会 `dispatch` 一个 `Init` 的 action 用于获取初始状态的 state 来填充 store
 
-## 创建 reducer
+## 创建 actions
 
-```ts title='./reduce.ts'
-interface StoreState {
-  count: number;
-}
-
-type IncrementAction = {
+```ts title='./actions.ts'
+export type IncrementAction = {
   type: "Increment";
 };
 
-type DecrementAction = {
+export type DecrementAction = {
   type: "Decrement";
 };
 
-type IncrementIfOddAction = {
+export type IncrementIfOddAction = {
   type: "IncrementIfOdd";
 };
 
-type IncrementAsync = {
+export type IncrementAsync = {
   type: "IncrementAsync";
 };
 
-export const initialState = {
+export type Actions =
+  | IncrementAction
+  | DecrementAction
+  | IncrementIfOddAction
+  | IncrementAsync;
+```
+
+## 创建 reducer
+
+```ts title='./reducers.ts'
+import { Actions } from "./actions";
+
+export interface StoreState {
+  count: number;
+}
+
+export const initialState: StoreState = {
   count: 0,
 };
 
-export const reducer = (state: StoreState, action: StoreAction) => {
+const reducer = (state: StoreState, action: Actions) => {
   switch (action.type) {
     case "Increment":
       return {
@@ -53,30 +65,30 @@ export const reducer = (state: StoreState, action: StoreAction) => {
       return initialState;
   }
 };
-```
 
-## createStrore 使用
-
-```ts title='./store.ts'
-import { createStore } from "redux";
-import { reducer } from "./reducer";
-const store = createStore(reducer);
-export default store;
+export default reducer;
 ```
 
 ## 和 react 结合使用
 
 ```ts title='App.tsx'
-import { initialState, StoreState } from "./reducer";
-import store from "./store";
+import React, { useEffect, useState } from "react";
+import { createStore } from "redux";
+import { Actions } from "./actions";
+import reduces, { StoreState, initialState } from "./reducers";
 
-const ReduxCounterVanilla = () => {
+const store = createStore<StoreState, Actions>(reduces, initialState);
+
+const App = () => {
   const [state, setState] = useState<StoreState>(initialState);
 
   useEffect(() => {
-    return store.subscribe(() => {
+    const unSubscribe = store.subscribe(() => {
       setState(store.getState());
     });
+    return () => {
+      unSubscribe();
+    };
   }, []);
   return (
     <div>
@@ -124,9 +136,11 @@ const ReduxCounterVanilla = () => {
     </div>
   );
 };
+
+export default App;
 ```
 
-<ReduxCounterVanilla />
+<CreateStore />
 
 ## createStrore 源码 解析
 

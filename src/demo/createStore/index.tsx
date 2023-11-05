@@ -1,58 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { createStore } from "../redux";
+import { createStore } from "../../redux";
+import { Actions } from "./actions";
+import reduces, { StoreState, initialState } from "./reducers";
 
-interface StoreState {
-  count: number;
-}
+const store = createStore<StoreState, Actions>(reduces, initialState);
 
-type IncrementAction = {
-  type: "Increment";
-};
-
-type DecrementAction = {
-  type: "Decrement";
-};
-
-type IncrementIfOddAction = {
-  type: "IncrementIfOdd";
-};
-
-type IncrementAsync = {
-  type: "IncrementAsync";
-};
-
-type StoreAction =
-  | IncrementAction
-  | DecrementAction
-  | IncrementIfOddAction
-  | IncrementAsync;
-
-const initialState = {
-  count: 0,
-};
-
-const reducer = (state: StoreState, action: StoreAction) => {
-  switch (action.type) {
-    case "Increment":
-      return {
-        count: (state.count += 1),
-      };
-    case "Decrement":
-      return {
-        count: (state.count -= 1),
-      };
-    case "IncrementIfOdd":
-      if (state.count % 2 !== 0) {
-        return reducer(state, { type: "Increment" });
-      }
-    default:
-      return initialState;
-  }
-};
-
-const store = createStore<StoreState, StoreAction>(reducer, initialState);
-
-const ReduxCounterVanilla = () => {
+const App = () => {
   const [state, setState] = useState<StoreState>(initialState);
 
   useEffect(() => {
@@ -110,4 +63,4 @@ const ReduxCounterVanilla = () => {
   );
 };
 
-export default ReduxCounterVanilla;
+export default App;
