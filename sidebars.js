@@ -99,6 +99,7 @@ const sidebars = {
         "Redux/createStore",
         "Redux/compose",
         "Redux/combineReducers",
+        "Redux/bindActionCreators",
       ],
     },
     {
