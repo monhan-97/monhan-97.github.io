@@ -23,3 +23,16 @@ export interface Store<S = any, A extends Action = UnknownAction> {
   subscribe(listener: ListenerCallback): Unsubscribe;
   replaceReducer(nextReducer: Reducer<S, A>): void;
 }
+
+export type StoreEnhancerStoreCreator<Ext extends {} = {}> = <
+  S,
+  A extends Action,
+  PreloadedState
+>(
+  reducer: Reducer<S, A, PreloadedState>,
+  preloadedState?: PreloadedState | undefined
+) => Store<S, A> & Ext;
+
+export type StoreEnhancer<Ext extends {} = {}> = <NextExt extends {}>(
+  next: StoreEnhancerStoreCreator<NextExt>
+) => StoreEnhancerStoreCreator<NextExt & Ext>;

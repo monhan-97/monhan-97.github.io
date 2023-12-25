@@ -1,19 +1,51 @@
 import { Action } from "./types/actions";
 import { Reducer } from "./types/reducer";
-import { Store, ListenerCallback, Dispatch } from "./types/store";
+import {
+  Store,
+  ListenerCallback,
+  Dispatch,
+  StoreEnhancer,
+} from "./types/store";
 import { kindOf } from "./utils/kindof";
 import isPlainObject from "./utils/isPlainObject";
 import actionTypes from "./utils/actionTypes";
 
 export function createStore<S, A extends Action, PreloadedState = S>(
   reducer: Reducer<S, A, PreloadedState>,
-  preloadedState?: PreloadedState | undefined
+  preloadedState?: PreloadedState | undefined,
+  enhancer?: StoreEnhancer
 ): Store<S, A> {
   if (typeof reducer !== "function") {
     throw new Error(
       `Expected the root reducer to be a function. Instead, received: '${kindOf(
         reducer
       )}'`
+    );
+  }
+
+  if (
+    (typeof preloadedState === "function" && typeof enhancer === "function") ||
+    (typeof enhancer === "function" && typeof arguments[3] === "function")
+  ) {
+    throw new Error(
+      "It looks like you are passing several store enhancers to " +
+        "createStore(). This is not supported. Instead, compose them " +
+        "together to a single function. See https://redux.js.org/tutorials/fundamentals/part-4-store#creating-a-store-with-enhancers for an example."
+    );
+  }
+
+  if (typeof enhancer !== "undefined") {
+    if (typeof enhancer !== "function") {
+      throw new Error(
+        `Expected the enhancer to be a function. Instead, received: '${kindOf(
+          enhancer
+        )}'`
+      );
+    }
+
+    return enhancer(createStore)(
+      reducer,
+      preloadedState as PreloadedState | undefined
     );
   }
 

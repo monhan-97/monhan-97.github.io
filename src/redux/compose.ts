@@ -1,11 +1,8 @@
-# compose
-
-# compose(组合) 简介
-
-- 从右到左把接收到的函数合成为一个最终函数
-- 右边函数的返回值将作为一个参数提供给它左边的函数。即 `compose(f, g, h)` 变为 `(...args) => f(g(h(...args)))`.
-
-```typescript
+/**
+ * 从左到右把多个函数组成单个函数调用
+ * @param funcs
+ * @returns
+ */
 function compose(...funcs: Function[]) {
   if (funcs.length === 0) {
     return <T>(arg: T) => arg;
@@ -21,4 +18,5 @@ function compose(...funcs: Function[]) {
     };
   });
 }
-```
+
+export default compose;

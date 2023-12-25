@@ -100,6 +100,7 @@ const sidebars = {
         "Redux/compose",
         "Redux/combineReducers",
         "Redux/bindActionCreators",
+        "Redux/applyMiddleware",
       ],
     },
     {
