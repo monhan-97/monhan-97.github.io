@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { createStore } from "../../redux";
 import { Actions } from "./actions";
 import reduces, { StoreState, initialState } from "./reducers";

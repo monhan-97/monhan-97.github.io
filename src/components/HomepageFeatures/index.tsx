@@ -1,29 +1,31 @@
-import React from "react";
 import clsx from "clsx";
+import rocket from "@site/static/img/rocket.svg";
+import satellite from "@site/static/img/satellite.svg";
+import star from "@site/static/img/star.svg";
 import styles from "./styles.module.css";
 
 type FeatureItem = {
   title: string;
-  Svg: React.ComponentType<React.ComponentProps<"svg">>;
+  Svg: any;
   description: JSX.Element;
 };
 
 const FeatureList: FeatureItem[] = [
   {
     title: "Focus",
-    Svg: require("@site/static/img/rocket.svg").default,
+    Svg: rocket,
     description: (
       <>The content focus on Web such as React, JavaScript, Vue...</>
     ),
   },
   {
     title: "Grace",
-    Svg: require("@site/static/img/satellite.svg").default,
+    Svg: satellite,
     description: <>All content has been carefully typeset.</>,
   },
   {
     title: "Original",
-    Svg: require("@site/static/img/star.svg").default,
+    Svg: star,
     description: (
       <>The content is original or translated from official documents.</>
     ),
