@@ -103,6 +103,16 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: "category",
+      label: "React",
+      link: {
+        type: "generated-index",
+        slug: "/introduce",
+        keywords: ["react"],
+      },
+      items: ["React/introduce", "React/jsx", "React/component"],
+    },
+    {
+      type: "category",
       label: "技术分享",
       link: {
         type: "generated-index",
