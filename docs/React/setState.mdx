@@ -1,0 +1,158 @@
+import SetState from "../../src/demo/SetState/";
+
+# 深入理解 setState
+
+## 案例代码
+
+```jsx
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      count: 0,
+    };
+  }
+
+  handleClick = () => {
+    this.setState({ count: this.state.count + 1 });
+  };
+
+  render(): React.ReactNode {
+    return (
+      <div>
+        {this.state.count}
+        <button onClick={this.handleClick} id="btn">
+          点击
+        </button>
+      </div>
+    );
+  }
+}
+```
+
+## setState 的作用
+
+- 更改 `state` 的唯一的方式 就是通过调用 `setState` 函数通知 `React`数据已经发发生了变化
+- `React` 会在合适的时候。触发这个组件的重新渲染
+
+## setState 可能是异步更新
+
+```javascript
+handleClick = () => {
+  this.setState({ count: this.state.count + 1 });
+  console.log(this.state.count); // 0;
+};
+```
+
+- 这里在 `setState` 调用完成之后立即获取 `count` 的值结果是 0。
+- 可见 `setState` 是异步的操作，我们并不能在执行完 `setState` 之后立马拿到最新的 `state` 的结果
+
+### setState 为什么要设计成异步?
+
+- `setState` 设计为异步，可以显著的提升性能；
+
+- 如果每次调用 setState 都进行一次更新，那么意味着 render 函数会被频繁调用，界面重新渲染，这样效率是很低的；
+
+### 如何获取到更新之后的值
+
+```javascript
+handleClick = () => {
+  this.setState({ count: this.state.count + 1 }, () => {
+    console.log("count: " + this.state.count); // 2
+  });
+};
+```
+
+- 在类组件里面可以使用 setState 的第二参数，一个回调函数，这个回调函数会在更新后会执行；
+
+```javascript
+// 函数式组件
+useEffect(() => {
+  console.log("count: " + count); // 2
+}, [count]);
+```
+
+- 在函数式组件里面可以使用 useEffect ，这个回调函数会在数组里面的依赖变化后执行；
+
+### setState 一定是异步？
+
+验证 1:在 setTimeout 中的更新：
+
+```javascript
+handleClick = () => {
+  setTimeout(() => {
+    this.setState({ count: this.state.count + 1 });
+    console.log("count: " + this.state.count); // 2
+  }, 0);
+};
+```
+
+验证二：原生 DOM 事件：
+
+```javascript
+componentDidMount() {
+  const btnEl = document.getElementById("btn");
+  btnEl.addEventListener('click', () => {
+    this.setState({ count: this.state.count + 1 });
+    console.log(this.state.count); // 2
+  })
+}
+```
+
+- 在组件生命周期或 `React` 合成事件中，`setState` 是异步；
+- `Promise`、`setTimeout` 、`原生事件处理（native event handlers）` 或任何其他事件内部的更新默认情况下不会在 React 进行异步更新
+
+## setState 的批量合并
+
+```jsx
+handleClick = () => {
+  this.setState({ count: this.state.count + 1 });
+
+  this.setState({ count: this.state.count + 1 });
+
+  this.setState({ count: this.state.count + 1 });
+
+  this.setState({ count: this.state.count + 1 });
+};
+```
+
+- 最后的渲染结果是 1
+- 因为在合成事件里面多次调用 `setState`的时候，如果每次调用 `setState` 都进行一次更新，那么意味着 `render` 函数会被频繁调用，界面重新渲染，这样会导致效率很低
+- 最好是将每次的 `setState` 放入到一个任务队列中(数组)，React 会将任务队列里面的状态依次合并。拿合并完成的 state 做一次 render
+
+如何可以做到，让 count 最终变成 4 呢？
+
+```jsx
+handleClick = () => {
+  this.setState((prevState) => {
+    return {
+      count: prevState.count + 1,
+    };
+  });
+
+  this.setState((prevState) => {
+    return {
+      count: prevState.count + 1,
+    };
+  });
+
+  this.setState((prevState) => {
+    return {
+      count: prevState.count + 1,
+    };
+  });
+
+  this.setState((prevState) => {
+    return {
+      count: prevState.count + 1,
+    };
+  });
+};
+```
+
+## React 18 之后的 setState
+
+:::success
+从带有 `createRoot` 的 React 18 开始，所有更新都将自动批处理，无论它们来自何处。也就是说 `Promise`、`setTimeout` 、`原生事件处理（native event handlers）` 或者其他的任何事件
+将和 React 事件内部更新相同的方式进行批量处理或者异步更新
+:::

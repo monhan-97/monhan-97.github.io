@@ -109,7 +109,12 @@ const sidebars: SidebarsConfig = {
         slug: "/introduce",
         keywords: ["react"],
       },
-      items: ["React/introduce", "React/jsx", "React/component"],
+      items: [
+        "React/introduce",
+        "React/jsx",
+        "React/component",
+        "React/setState",
+      ],
     },
     {
       type: "category",
