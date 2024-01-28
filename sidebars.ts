@@ -114,6 +114,8 @@ const sidebars: SidebarsConfig = {
         "React/jsx",
         "React/component",
         "React/setState",
+        "React/controlled-uncontrolled",
+        "React/higher-order-components",
       ],
     },
     {
