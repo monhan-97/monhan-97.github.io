@@ -112,21 +112,10 @@ const sidebars: SidebarsConfig = {
       items: [
         "React/introduce",
         "React/jsx",
-        "React/component",
         "React/setState",
         "React/controlled-uncontrolled",
         "React/higher-order-components",
       ],
-    },
-    {
-      type: "category",
-      label: "技术分享",
-      link: {
-        type: "generated-index",
-        slug: "/share",
-        keywords: ["react-18-features"],
-      },
-      items: ["share/react-18-features", "share/redux-useStore"],
     },
   ],
 };

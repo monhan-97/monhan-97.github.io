@@ -6,19 +6,36 @@
 
 ## 什么是 React
 
-React 是由 `FaceBook`研发的、 用于`解决 UI 复杂度`的开源 `Javascript` 库,目前由 React 联合社区维护
-:::note
-他不是框架，只是为了解决 UI 复杂度而诞生的一个库
-:::
+React 是由 `FaceBook`研发的、 用于`解决 UI 复杂度`的开源 `Javascript` 库,只提供了 UI 层面的解决方案
+
+遵循组件设计模式、声明式编程范式和函数式编程概念，以使前端应用程序更高效
+
+使用虚拟 `DOM` 来有效地操作 DOM，遵循从高阶组件到低阶组件的单向数据流
+
+帮助我们将界面成了各个独立的小块，每一个块就是组件，这些组件之间可以组合、嵌套，构成整体页面
+
+`React` 类组件使用一个名为 `render()` 的方法或者函数组件 `return`，接收输入的数据并返回需要展示的内容
+
+```JSX
+class HelloMessage extends React.Component {
+  render() {
+    return <div>Hello {this.props.name}</div>;
+  }
+}
+
+ReactDOM.render(
+  <HelloMessage name="Taylor" />,
+  document.getElementById("hello-example")
+);
+```
 
 ## React 的特点
 
-- 轻量:React 的开发版所有源码(包含注释)仅仅 3000 多行
-- 原生:所有的 React 的代码都是用原生 JS 写的，不依赖其他任何库
+- JSX 语法
+- 单项数据流：所有的数据自顶而下的流动
+- 组件化
+- 声明式编程
 - 易扩展: React 对代码的封装程度比较低，也没有使用过多的魔法 ，所以 React 的很多功能都可以扩展
 - 不依赖宿主环境: React 只依赖原生 JS 语言，不依赖任何东西，包括运行环境。因此它可以轻松的移植到
   浏览器，桌面应用，移动端，
 - 渐进式: React 并非框架，对整个工程没有强制约束力。这对与那些已存在的工程，可以逐步的将其改造成 React 而不需要全盘重写
-- 单项数据流：所有的数据自顶而下的流动
-- 用 JS 代码声明界面
-- 组件化
