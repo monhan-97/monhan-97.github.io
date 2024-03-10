@@ -1,0 +1,33 @@
+# HTML 中的 JavaScript
+
+## script 元素
+
+将 `JavaScript` 插入 `HTML` 的主要方法是使用 `script` 标签,`script`标签 有下列八个属性
+
+- `async`: 可选。 立即开始下载脚本文件，并且不会阻止 HTML 解析。这样可以提高页面的加载性能，
+  因为脚本的下载和执行可以与其他页面内容的加载并行进行。这在某些情况下可以加快页面加载速度，但需要注意的是，由于脚本的异步加载，脚本的执行顺序可能不是按照它们在页面中出现的顺序来执行的，这可能会导致一些潜在的问题。
+
+- `charset`:可选。指定 `src` 属性的代码字符集 这个属性很少使用 因为大多数浏览器不在乎他的值
+
+- `crossorigin`: 可选。用于指定如何处理来自不同域的资源请求。这个属性通常用于加载跨域脚本资源，以确保安全性和正确性。
+
+  - `crossorigin` 属性有以下几个可能的取值：
+    - `anonymous` : 表示该请求不需要凭据（如 cookie 或 HTTP 认证信息），浏览器会发送一个 Origin 头部信息。
+    - `use-credentials` : 表示该请求需要凭据，浏览器会在请求头部添加一个 credentials 参数。
+
+- `defer`: 可选。用于延迟脚本的执行，等待整个文档解析完毕。这样可以确保脚本的执行不会阻塞页面的加载和渲染，
+  在 `DOMContentLoaded` 事件之前按照脚本在页面中出现的顺序依次执行。
+- `integrity`:`integrity` 属性值 包含一个基于 `SHA-384` 算法生成的哈希值，用于验证所引用文件内容的完整性。
+  浏览器会在下载文件之后检查其哈希值，以确保它与提供的哈希值匹配，从而确认文件的完整性和安全性。降低因为第三方资源文件被篡改而导致的潜在风险
+- `src`:可选。表示包含要执行的代码和外部文件 不受浏览器策略限制
+
+## 动态加载脚本
+
+除了`script`标签可以加载脚本 因为`JavaScript`可以使用 `DOM API` 所以通过向 DOM 中动态添加 `script` 元素同样可以加载指定的脚本。
+只要创建一个 script 元素并将其添加到 DOM 即可。
+
+```javascript
+let script = document.createElement("script");
+script.src = "gibberish.js";
+document.body.appendChild(script);
+```

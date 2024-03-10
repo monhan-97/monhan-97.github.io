@@ -52,6 +52,16 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: "category",
+      label: "Javascript",
+      link: {
+        type: "generated-index",
+        slug: "/script-tag",
+        keywords: ["Javascript"],
+      },
+      items: ["Javascript/script-tag"],
+    },
+    {
+      type: "category",
       label: "事件循环",
       link: {
         type: "generated-index",
