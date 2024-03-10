@@ -58,7 +58,7 @@ const sidebars: SidebarsConfig = {
         slug: "/script-tag",
         keywords: ["Javascript"],
       },
-      items: ["Javascript/script-tag"],
+      items: ["Javascript/script-tag", "Javascript/variable"],
     },
     {
       type: "category",
