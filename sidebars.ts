@@ -62,6 +62,16 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: "category",
+      label: "计算机网络",
+      link: {
+        type: "generated-index",
+        slug: "/computer-network",
+        keywords: ["计算机网络"],
+      },
+      items: ["NetWork/client-and-sever"],
+    },
+    {
+      type: "category",
       label: "事件循环",
       link: {
         type: "generated-index",
