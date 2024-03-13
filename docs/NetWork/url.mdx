@@ -1,0 +1,45 @@
+# URL
+
+`url` 全称 **Uniform Resource Locator**，统一资源定位符，他是一个字符串，用于表达互联网中某个资源的位置。
+
+## URL 的格式
+
+![event-loop](./images/Snipaste_2024-03-14_00-44-15.png)
+
+## 协议
+
+浏览器通过不同的协议，判断应该使用其中哪种功能来访问相应的数据
+
+使用 HTTP 协议访问 Web 服务器
+
+```javascript
+https://username:password@www.glasscom.com:80/dir/file.html
+```
+
+使用 FTP 协议下载文件和上传文件
+
+```javascript
+ftp://username:password@www.glasscom.com:21/dir/file.html
+```
+
+读取客户端计算机本地文件
+
+```javascript
+file://localhost/c:/path/file.zip
+```
+
+发送电子邮件时
+
+```javascript
+mailto:tone@glasscom.com
+```
+
+阅读新闻组的文章时
+
+```javascript
+news: comp.protocols.tcp - ip;
+```
+
+## 端口
+
+用来识别要连接的服务器程序的编号，不同的服务器程序会使用不同的编 号，例如 Web 是 80，邮件是 25 等。

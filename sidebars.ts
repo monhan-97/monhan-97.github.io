@@ -68,7 +68,7 @@ const sidebars: SidebarsConfig = {
         slug: "/computer-network",
         keywords: ["计算机网络"],
       },
-      items: ["NetWork/client-and-sever"],
+      items: ["NetWork/client-and-sever", "NetWork/url"],
     },
     {
       type: "category",
