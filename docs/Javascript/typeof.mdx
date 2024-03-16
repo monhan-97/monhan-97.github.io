@@ -1,0 +1,47 @@
+# typeof 操作符
+
+用来确定任意变量的数据类型，对一个变量使用 `typeof`会返回下列字符串之一。
+
+- `undefined`:表示值为未定义;
+
+  ```javascript
+  typeof undefined; // undefined
+  ```
+
+- `boolean`:表示值为布尔值;
+
+  ```javascript
+  typeof true; // boolean
+  ```
+
+- `string`:表示值为字符串;
+
+  ```javascript
+  typeof ""; // string
+  ```
+
+- `number`:表示值为数值;
+
+  ```javascript
+  typeof 0; // number
+  ```
+
+- `object`:表示值为对象(不是函数)或 null
+
+  ```javascript
+  typeof null; // object
+  typeof {}; // object
+  typeof []; // object
+  ```
+
+- `function`:表示值为函数
+
+  ```javascript
+  typeof function () {}; // function
+  ```
+
+- `symbol`:表示值为符号
+
+  ```javascript
+  typeof Symbol(); // symbol
+  ```

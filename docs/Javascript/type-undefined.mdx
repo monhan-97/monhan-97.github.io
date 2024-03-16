@@ -1,0 +1,19 @@
+# Undefined 类型
+
+Undefined 类型 只有一个值 就是特殊值 `undefined`,当使用 var 或者 let 声明了变量但是没有初始化的时候，就相当于给变量赋予了 `undefined` 值。
+
+```javascript
+let message;
+console.log(message === undefined); //true;
+```
+
+在对未初始化的变量调用 `typeof` 的时候, 返回的结果是 `undefined`,但对未声明的变量调用它的时候，返回的结果还是`undefined`
+
+```javascript
+let message;
+
+typeof message; // undefined
+
+// 确保没有声明过这个变量
+typeof age; // undefined
+```

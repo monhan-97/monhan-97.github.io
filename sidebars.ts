@@ -58,7 +58,19 @@ const sidebars: SidebarsConfig = {
         slug: "/script-tag",
         keywords: ["Javascript"],
       },
-      items: ["Javascript/script-tag", "Javascript/variable"],
+      items: [
+        "Javascript/script-tag",
+        "Javascript/variable",
+        {
+          type: "category",
+          label: "数据类型",
+          items: [
+            "Javascript/typeof",
+            "Javascript/type-undefined",
+            "Javascript/type-null",
+          ],
+        },
+      ],
     },
     {
       type: "category",
