@@ -68,6 +68,7 @@ const sidebars: SidebarsConfig = {
             "Javascript/typeof",
             "Javascript/type-undefined",
             "Javascript/type-null",
+            "Javascript/type-boolean",
           ],
         },
       ],
@@ -80,7 +81,11 @@ const sidebars: SidebarsConfig = {
         slug: "/computer-network",
         keywords: ["计算机网络"],
       },
-      items: ["NetWork/client-and-sever", "NetWork/url"],
+      items: [
+        "NetWork/client-and-sever",
+        "NetWork/url",
+        "NetWork/http-protocol",
+      ],
     },
     {
       type: "category",

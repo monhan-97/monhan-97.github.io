@@ -1,0 +1,20 @@
+# Boolean 类型
+
+Boolean 类型是 `ECMAScript` 中使用最频繁的类型之一, 只有两个值:`true` 和 `false` 这两个布尔值不同于数值。所以 `true` 不等于 1,
+`false` 不等于 0。 下面是给变量赋布尔值的例子
+
+```javascript
+let found = true;
+let lost = false;
+```
+
+虽然布尔值只有 `true` 和 `false` 两个值, 但所有类型的值都有相应的布尔值的等价形式,
+要将一个其他类型的值转换为布尔值可以调用特定的 `Boolean()` 函数。下表总结了不用类型转换与布尔之间的转换规则。
+
+| 数据类型  | 转换为 true 的值            | 转换为 false 的值 |
+| --------- | --------------------------- | ----------------- |
+| Boolean   | true                        | false             |
+| String    | 非空字符串                  | '' (空字符串)     |
+| Number    | 非零数值(包括 **Infinity**) | 0,NaN             |
+| Object    | 任意对象                    | null              |
+| Undefined | N/A(不存在)                 | undefined         |
