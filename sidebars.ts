@@ -69,6 +69,7 @@ const sidebars: SidebarsConfig = {
             "Javascript/type-undefined",
             "Javascript/type-null",
             "Javascript/type-boolean",
+            "Javascript/type-number",
           ],
         },
       ],
