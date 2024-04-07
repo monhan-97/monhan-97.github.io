@@ -1,0 +1,283 @@
+# String 类型
+
+String(字符串)数据类型表示零或多个 16 位 `Unicode` 字符序列
+
+## 字符字面量
+
+字符串数据类型包含一些字符字面量，用于表示非打印字符或有其他的用途。
+
+| 字面量   | 含义                                                                                                |
+| -------- | --------------------------------------------------------------------------------------------------- |
+| `\t`     | 制表符                                                                                              |
+| `\b `    | 退格                                                                                                |
+| `\r`     | 回车                                                                                                |
+| `\f`     | 换页                                                                                                |
+| `\\`     | 反斜杠(\)                                                                                           |
+| `\' `    | 单引号(')                                                                                           |
+| `\"`     | 双引号(")                                                                                           |
+| `\xnn`   | 以`十六进制编码 nn `表示的字符串(其中 n 是十六进制数字 0-F) 例如"\x41" 等于"A"                      |
+| `\unnnn` | 以`十六进制编码 nnnn `表示的 Unicode 字符串(其中 n 是十六进制数字 0-F) 例如"\u03a3" 等于希腊数字"Σ" |
+
+这些字面量可以出现在字符串中的任意位置,并且可以作为单个字符串被解释
+
+```javascript
+let text = "This is the letter sigma:\u03a3 .";
+console.log(text.length); //28
+```
+
+因为转义字符表示一个字符 即使包含 6 个字符长的转义序列 `text` 的长度仍然是 `28`。
+
+:::warning
+如果字符串中包含双字节符号,那么 length 属性返回的值可能就不是准确的字符数了
+:::
+
+## 字符串的特点
+
+`ECMAScript` 中的字符串是不可变的,意思是一旦创建,它们的值就不能变了。要修改某个变量中的值，必须要摧毁原始的字符串。
+然后将包含新值的的另一个字符串保存到该变量。
+
+```javascript
+let lang = "Java";
+lang = lang + "Script";
+```
+
+整个过程首先会分配一个足够容纳 10 个字符的空间，然后填充上`Java`和`Script` 最后销毁原始的字符串`Java`和`Script`。
+
+## 转换为字符串
+
+有两种方式把一个值转换为字符串。首先是使用几乎所有值都有的 `toString()`方法,该方法返回当前值的字符串等价物。
+
+```javascript
+let age = 11;
+let ageAsString = age.toString(); //字符串 "11"
+let found = true;
+let foundAsString = found.toString(); //字符串 "true"
+```
+
+`toString()`方法可用于数值，布尔值，对象和字符串。 **`null`和`undefined`值没有 toString() 方法。**
+
+多数情况下,`toString()`不接受任何参数。不过，在对**数值**调用这个方法的时候，`toString()`可以接收一个底数参数。
+默认按照数值的十进制展示
+
+```javascript
+let number = 10;
+console.log(number.toString()); //"10"
+console.log(number.toString(2)); //"1010"
+console.log(number.toString(8)); //"12"
+console.log(number.toString(16)); //"a"
+console.log(number.toString(10)); //"10"
+```
+
+如果你不确定一个值是不是`null`或者`undefined` 可以使用 `String()`函数 进行转换。`String()`函数遵循以下规则
+
+- 如果值是 `null`或者`undefined` 则返回对应的字面量文本 `"null"` `"undefined"`
+- 如果值有`toString()`方法 则调用该方法(不传底数参数) 并返回结果
+
+## 模版字面量
+
+`ECMAScript6` 新增了使用`模版字面量`, `模版字面量`可以保留换行字符串。可以跨行定义字符串。
+
+```javascript
+let myMultilineString = `first line\nsecond line`;
+let myMultilineTemplateLiteral = `first line
+second line`;
+
+console.log(myMultilineString);
+// first line
+// second line
+console.log(myMultilineTemplateLiteral);
+// first line
+// second line
+console.log(myMultilineString === myMultilineTemplateLiteral);
+```
+
+由于`模版字面量`会保持反引号内部的空格 所以在使用时要格外注意，格式正确的`模版字面量`看起来可能缩进不当
+
+```javascript
+let myTemplateLiteral = `first line
+                         second line`;
+console.log(myTemplateLiteral.length); // 47
+
+// 这个模版字面量以一个换行符开头
+let sencondTemplateLiteral = `
+first line
+second line`;
+console.log(sencondTemplateLiteral[0] === "\n"); // true
+
+// 这个模版字面量以一个换行符开头
+let thirdTemplateLiteral = `first line
+second line`;
+console.log(thirdTemplateLiteral);
+// first line
+// second line
+```
+
+## 字符串插值
+
+`模版字面量`最常用的一个特性是支持**字符串插值**,也就是可以在一个连续定义中插入一个或者多个值。从技术上来说`模版字面量`是一种特殊的 **`JavaScript句法表达式`**,
+只不过求值后得到的是字符串。
+
+- 句法表达式 一般指的是语言中用来表示逻辑、运算或值的组合的语法结构。在编程中，句法表达式通常指的是一系列由运算符、操作数和函数调用等组成的代码片段，
+  它们可以被求值为一个值。
+
+`字符串插值`可以通过在`${}`使用一个 `JavaScript 表达式`实现
+
+```javascript
+let value = 5;
+let exponent = "second";
+//以前,字符串插值是这样实现的。
+let interpolatedString =
+  value + " to the " + exponent + " power is " + value * value;
+
+//现在可以用模版字面量这样实现
+let interpolatedTemplateLiteral = `${value} to the ${exponent} power is  ${
+  value * value
+}`;
+
+console.log(interpolatedString); // 5 to the power is 25
+console.log(interpolatedTemplateLiteral); // 5 to the power is 25
+```
+
+所有插入的表达式`${x}` 都会执行 下面的字符串强制转换步骤
+
+- 字符串按原样返回。
+- `undefined` 转换成 `"undefined"`。
+- `null` 转换成 `"null"`。
+- `true` 转换成 `"true"`; `false` 转换成 `"false"`。
+- 使用与 `toString(10)` 相同的算法转换数字。
+- 使用与 `toString(10)` 相同的算法转换 BigInt。
+- `Symbol` 抛出 `TypeError`。
+- 对于对象，首先，通过依次调用其 `[@@toPrimitive]()`（hint 为 "string"）、toString() 和 valueOf() 方法将其转换为原始值。然后将生成的原始值转换为一个字符串。
+
+```javascript
+console.log(`Hello ${`World`}`); // Hello World;
+
+//将表达式转换为字符串时会调用toString();
+const foo = {
+  toString: () => {
+    return "World";
+  },
+};
+console.log(`Hello ${foo}`); // Hello World;
+
+function capitalize(word) {
+  return `${word[0].toUpperCase()}${word.slice(1)}`;
+}
+
+console.log(`${capitalize("hello")}, ${capitalize("world")}`); // Hello World
+```
+
+## 模版字面量标签函数
+
+`模版字面量`也支持定义 **标签函数 (tag function)**,而通过**标签函数**可以自定义插值行为。
+**标签函数**会接收被插值记号分隔后的模版和每个表达式求值的结果
+
+```javascript
+let a = 6;
+let b = 9;
+
+function simpleTag(strings, ...expression) {
+  console.log(strings, ...expression);
+  return strings;
+}
+
+const taggedResult = simpleTag`${a} + ${b} = ${a + b}`;
+// [""," + "," = ",""];
+// 6
+// 9
+// 15
+
+console.log(taggedResult);
+// 'foobar'
+```
+
+- 对于有 **n** 个插值的模版字面量，传给**标签函数**的表达式参数的个数始终是 **n**
+- 传给**标签函数**的第一个参数所包含的字符串个数则始终是 **n+1**
+
+如果你想把这些字符串和对表达式求值的结果拼接起来作为默认返回的字符串。
+
+```javascript
+let a = 6;
+let b = 9;
+
+function zipTag(strings, ...expression) {
+  if (expression.length === 0) {
+    return strings[0];
+  }
+  return (
+    strings[0] +
+    expression
+      .map((item, index) => {
+        return `${item}${strings[index + 1]}`;
+      })
+      .join("")
+  );
+}
+
+const taggedResult = zipTag`${a} + ${b} = ${a + b}`;
+const unTaggedResult = `${a} + ${b} = ${a + b}`;
+
+console.log(taggedResult);
+console.log(unTaggedResult);
+
+// "6 + 9 = 15"
+// "6 + 9 = 15"
+```
+
+## 原始字符串
+
+`String.raw` 是 `JavaScript` 中的一个原生标签模板函数，它用于获取一个字符串的原始字面量形式，而不会进行任何转义处理。
+
+使用 `String.raw`，你可以在字符串中保留转义字符的原始形式，而不是将其转换为实际的转义字符。这对于处理一些特殊的字符串场景非常有用，例如正则表达式、路径等。
+
+```javascript
+console.log(String.raw`C:\Program Files\Node.js`); //C:\Program Files\Node.js
+console.log(`C:\Program Files\Node.js`); //C:Program FilesNode.js
+
+// \u00a9 是版权符号
+console.log(`\u00a9`); //©
+console.log(String.raw`\u00a9`); // \u00a9
+
+//换行符示例
+console.log(`first line \nsecond line`);
+// first line
+// second line
+console.log(String.raw`first line \nsecond line`);
+// first line \nsecond line
+
+// 对实际的换行符来说是不行的
+// 它们不会被转换成转义序列的形式
+console.log(`first line 
+second line`);
+// first line
+// second line
+console.log(String.raw`first line 
+second line`);
+// first line
+// second line
+```
+
+另外，也可以通过**标签函数**的第一个参数，即字符串数组的`.raw`属性取得每个字符串的原始内容
+
+```javascript
+const printRaw = (strings) => {
+  console.log("Actual characters:");
+  for (const string of strings) {
+    console.log(string);
+  }
+
+  console.log("Escaped characters:");
+  for (const rawString of strings.raw) {
+    console.log(rawString);
+  }
+};
+
+printRaw`\u00A9 ${"and"} \n`;
+
+// Actual characters:
+// ©
+// 换行符
+// Escaped characters:
+// \u00A9
+// \n
+```

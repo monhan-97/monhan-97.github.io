@@ -70,6 +70,7 @@ const sidebars: SidebarsConfig = {
             "Javascript/data-type/null",
             "Javascript/data-type/boolean",
             "Javascript/data-type/number",
+            "Javascript/data-type/string",
           ],
         },
       ],
