@@ -1,0 +1,244 @@
+# 常用的内置符号
+
+`ECMAScript` 引入了一批 **常用的内置符号(well-known symbol)** 可以用于暴露语言的内部行为,开发者可以直接**访问、重写、或模拟**这些行为。
+这些内置符号都以`Symbol`工厂函数字符串属性的形式存。
+
+内置符号最重要的用途之一就是重新定义它们，从而改变原生结构的行为。比如`for-of`循环会在相关对象上使用 `Symbol.iterator`属性，那么就可以通过在
+定义对象上重新定义`Symbol.iterator`的值 来改变`for-of`在迭代该对象时的行为。
+
+## Symbol.asyncIterator
+
+**`Symbol.asyncIterator`** 符号指定了一个对象的默认异步迭代器。如果一个对象设置了这个属性，它就是异步可迭代对象，可用于 `for await...of` 循环。
+
+### 示例
+
+`for await...of`循环会利用这个函数执行异步迭代操作。循环的时候，它们会调用以`Symbol.asyncIterator`为`key`的函数,
+并期望这个函数会返回一个实现迭代器的 API 的对象
+
+```typescript
+class Foo {
+  async *[Symbol.asyncIterator]() {}
+}
+
+const f = new Foo();
+
+console.log(f[Symbol.asyncIterator]()); // AsyncGenerator {<suspended>}
+```
+
+技术上这个由 **`Symbol.asyncIterator`** 函数生成的对象，应该通过其 `next` 方法陆续返回 `Promise` 实例，可以通过显示的调用 `next` 方法返回，
+也可以通过异步生成器函数返回:
+
+```typescript
+class Emitter {
+  constructor(max) {
+    this.max = max;
+    this.asyncIndex = 0;
+  }
+
+  async *[Symbol.asyncIterator]() {
+    while (this.max > this.asyncIndex) {
+      yield Promise.resolve(this.asyncIndex++);
+    }
+  }
+}
+
+const emitter = new Emitter(5);
+
+async function asyncCount() {
+  for await (const x of emitter) {
+    console.log(x);
+  }
+}
+
+asyncCount();
+// 0
+// 1
+// 2
+// 3
+// 4
+```
+
+## Symbol.hasInstance
+
+**`Symbol.hasInstance`** 用于判断某对象是否为某构造函数的实例。因此你可以用它自定义 `instanceof` 操作符在某个类上的行为。
+
+`instanceof`操作符可以 **用来确定一个对象实例的原型链上是否有原型**。
+
+```typescript
+function Foo() {}
+const foo = new Foo();
+console.log(foo instanceof Foo); // true
+
+function Bar() {}
+const bar = new Bar();
+console.log(bar instanceof Bar); // true
+```
+
+### `instanceof` 原理
+
+- 首先，它会检查 ` .prototype` 是否存在于 `object` 的原型链上。如果存在，那么返回 `true`。
+- 如果 `constructor.prototype` 不在 `object` 的原型链上，那么它会继续查找 `constructor.prototype` 的原型对象的原型链，直到找到 `Object.prototype`。如果仍然没有找到，那么返回 `false`。
+
+```typescript
+function Foo() {}
+const foo = new Foo();
+console.log(Object.getPrototypeOf(foo) === Foo.prototype); // true
+
+function Bar() {}
+const bar = new Bar();
+console.log(Object.getPrototypeOf(bar) === Bar.prototype); // true
+```
+
+在 `ES6` 中`instanceof`操作符会使用 `Symbol.hasInstance`函数来确定关系 以`Symbol.hasInstance`为 key 的函数会执行同样的操作
+
+```typescript
+function Foo() {}
+const foo = new Foo();
+console.log(Foo[Symbol.hasInstance](foo)); // true
+
+function Bar() {}
+const bar = new Bar();
+console.log(Bar[Symbol.hasInstance](bar)); // true
+```
+
+因为这个属性定义在来 `Function` 的原型上 所以默认所有函数和类都可以调用
+
+```typescript
+class Bar {}
+class Baz extends Bar {
+  static [Symbol.hasInstance]() {
+    return false;
+  }
+}
+
+const b = new Baz();
+console.log(Bar[Symbol.hasInstance](b)); // true
+console.log(b instanceof Bar); // true
+console.log(Baz[Symbol.hasInstance](b)); // false
+console.log(b instanceof Baz); // true
+```
+
+## Symbol.isConcatSpreadable
+
+**`Symbol.isConcatSpreadable`** 符号用于配置对象作为 `Array.prototype.concat()` 方法的参数时是否展开其数组元素，
+
+### 描述
+
+**`Symbol.isConcatSpreadable`** 可以直接定义为对象属性或继承而来，它是布尔类型。它可以控制数组或类似数组（array-like）的对象的行为：
+
+- 对于数组对象，默认情况下，用于 `concat` 时，会按数组元素展开然后进行连接（数组元素作为新数组的元素）。
+  如果为`true` 和默认情况基本一样， 如果是 `false` 或者假值会导致整个对象被追加到数组末尾，
+- 对于类似数组的对象，用于 `concat` 时，该对象整体作为新数组的元素，如果为`false`或者假值 和默认情况基本一样，如果为`true` 或真值会导致这个类数组对象展开然后进行连接。
+- 其他不是类数组的对象在 `Symbol.isConcatSpreadable`被设置为 true 的情况下将被忽略
+
+### 示例
+
+数组
+
+```javascript
+let initial = ["foo"];
+let array = ["bar"];
+
+// 数组对象的 Symbol.isConcatSpreadable 没有默认值
+console.log(array[Symbol.isConcatSpreadable]); // undefined
+
+// 数组对象默认情况下会被打平到已有的数组
+console.log(initial.concat(array)); // ['foo', 'bar']
+
+array[Symbol.isConcatSpreadable] = false;
+// 如果是 false 或者假值会导致整个对象被追加到数组末尾，
+console.log(initial.concat(array)); // ['foo', ['bar']]
+```
+
+ArrayLike(类数组)
+
+```javascript
+let initial = ["foo"];
+let arrayLikeObj = {
+  length: 1,
+  0: "bar",
+};
+
+// 类数组对象的 Symbol.isConcatSpreadable 没有默认值
+console.log(arrayLikeObj[Symbol.isConcatSpreadable]); // undefined
+
+// 该对象整体作为新数组的元素
+console.log(initial.concat(arrayLikeObj)); // ['foo',{...}]
+
+arrayLikeObj[Symbol.isConcatSpreadable] = true;
+
+// 如果为`true` 或真值会导致这个类数组对象展开然后进行连接。
+console.log(initial.concat(arrayLikeObj)); // ['foo', bar]
+```
+
+其他不是类数组的
+
+```javascript
+let initial = ["foo"];
+let otherObject = new Set().add("qux");
+
+// Symbol.isConcatSpreadable 没有默认值
+console.log(otherObject[Symbol.isConcatSpreadable]); // undefined
+
+// 该对象整体作为新数组的元素
+console.log(initial.concat(otherObject)); // ['foo',Set(1)]
+
+otherObject[Symbol.isConcatSpreadable] = true;
+
+// 其他不是类数组的对象在 `Symbol.isConcatSpreadable`被设置为 true 的情况下将被忽略
+console.log(initial.concat(otherObject)); // ['foo']
+```
+
+## Symbol.iterator
+
+**`Symbol.iterator`** 一个方法 为每一个对象定义了默认的迭代器。该迭代器可以被 `for...of` 循环使用。
+
+### 描述
+
+当需要对一个对象进行迭代时（比如开始用于一个 `for...of` 循环中），它的 `@@iterator` 方法都会在不传参情况下被调用，返回的迭代器用于获取要迭代的值。
+
+一些内置类型拥有默认的迭代器行为，其他类型（如 `Object`）则没有。拥有默认的 `@@iterator` 方法的内置类型是：
+
+- `Array.prototype[@@iterator]`
+- `String.prototype[@@iterator]`
+- `Map.prototype[@@iterator]`
+- `Set.prototype[@@iterator]`
+- `TypeArray.prototype[@@iterator]`
+
+### 示例
+
+自定义迭代器
+
+```javascript
+const iterable = {};
+
+iterable[Symbol.iterator] = function* () {
+  yield 1;
+  yield 2;
+  yield 3;
+};
+
+console.log([...iterable]); // [1,2,3]
+```
+
+在类或对象中使用`计算属性`定义迭代：
+
+```javascript
+class Foo {
+  *[Symbol.iterator]() {
+    yield 1;
+    yield 2;
+    yield 3;
+  }
+}
+
+const someObj = {
+  *[Symbol.iterator]() {
+    yield "a";
+    yield "b";
+  },
+};
+
+console.log(...new Foo()); // 1, 2, 3
+console.log(...someObj); // a, b
+```
