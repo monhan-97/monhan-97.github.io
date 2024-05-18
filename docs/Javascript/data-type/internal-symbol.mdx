@@ -242,3 +242,137 @@ const someObj = {
 console.log(...new Foo()); // 1, 2, 3
 console.log(...someObj); // a, b
 ```
+
+## Symbol.match
+
+**`Symbol.match`** 一个正则表达式的方法，这个方法用正则表达式去匹配字符串。 可以被 `String.prototype.match` 方法使用。
+正则表达式的原型上默认有`Symbol.match`为 `key` 函数的定义
+
+```javascript
+console.log(RegExp.prototype[Symbol.match]); // ƒ [Symbol.match]() { [native code] }
+
+console.log("foobar".match(/bar/)); // ['bar', index: 3, input: 'foobar', groups: undefined]
+```
+
+### String.prototype.match
+
+该方法检索字符串与正则表达式进行匹配的结果。
+
+#### 参数
+
+- `regexp`
+
+  一个正则表达式对象或者任何具有 **`Symbol.match`** 方法的对象。
+
+  如果 `regexp` 不是 `RegExp` 对象并且对象上无 **`Symbol.match`** 方法，则会使用 `new RegExp(regexp)` 将其隐式地转换为 `RegExp`。
+
+  如果你没有给出任何参数并直接使用 `match()` 方法，你将会得到一个包含空字符串的数组：`[""]`，因为这等价于 `match(/(?:)/)`
+
+#### 描述
+
+`String.prototype.match` 方法本身的实现非常简单，它只是使用字符串作为第一个参数调用了参数的 **`Symbol.match`** 方法。实际的实现来自于 `RegExp.prototype[@@match]()`。
+
+`Symbol.match` 函数接收一个参数 调用`match()`方法的字符串。它的返回值成为 `match()`的返回值。在这种情况下，`match()` 的行为完全由 `@@match` 方法定义
+
+```javascript
+class FooMatcher {
+  [Symbol.match](a) {
+    return a.includes("foo");
+  }
+}
+console.log("foobar".match(new FooMatcher())); //true;
+console.log("barbaz".match(new FooMatcher())); //false
+```
+
+## Symbol.replace
+
+**`Symbol.replace`** 一个正则表达式的方法，这个方法替换一个字符串中匹配的子串。 可以被 `String.prototype.replace` 方法使用。
+正则表达式的原型上默认有`Symbol.replace`为 `key` 函数的定义
+
+```javascript
+console.log(RegExp.prototype[Symbol.replace]); // ƒ [Symbol.replace]() { [native code] }
+
+console.log("foobarbaz".replace(/bar/, "qux")); // 'fooquxbaz'
+```
+
+### String.prototype.replace
+
+该方法返回一个新字符串，其中一个、多个或所有匹配的 `pattern` 被替换为 `replacement`。
+
+#### 参数说明
+
+- `pattern`
+
+  可以是字符串或者一个带有 **`Symbol.replace`** 方法的对象，任何没有 **`Symbol.replace`** 方法的值都会被强制转换为字符串。
+
+- `replacement`
+
+  可以是字符串或函数。
+
+  - 如果是字符串，它将替换由 `pattern` 匹配的子字符串
+  - 如果是函数，将为每个匹配调用该函数，并将其返回值用作替换文本。
+
+#### 描述
+
+该方法并不改变调用它的字符串本身，而是返回一个新的字符串。
+
+如果 `pattern` 是一个带有 **`Symbol.replace`** 方法的对象（包括 `RegExp` 对象），则该方法将被调用。
+
+`Symbol.replace` 函数接受两个参数 调用`replace()`方法的字符串 和 `replacement`。它的返回值成为 `replace()`
+的返回值。在这种情况下，`replace()` 的行为完全由 `@@replace` 方法定义
+
+```javascript
+class FooReplacer {
+  static [Symbol.replace](pattern, replacement) {
+    return pattern.split("foo").join(replacement);
+  }
+}
+
+console.log("barfoobaz".replace(FooReplacer, "qux")); // 'barquxbaz'
+```
+
+## Symbol.search
+
+**`Symbol.search`** 一个正则表达式的方法，这个方法返字符串中匹配正则表达式的索引。 可以被 `String.prototype.search` 方法使用。
+正则表达式的原型上默认有`Symbol.search`为 `key` 函数的定义
+
+```javascript
+console.log(RegExp.prototype[Symbol.search]); // ƒ [Symbol.search]() { [native code] }
+
+console.log("foobar".search(/bar/)); // 3
+```
+
+### String.prototype.search
+
+`search()` 方法用于在 `String` 对象中执行正则表达式的搜索，寻找匹配项。
+
+#### 参数说明
+
+- `pattern`
+
+  一个正则表达式对象，或者具有 **`Symbol.search`**方法的任意对象。
+
+  如果 `regexp` 不是 `RegExp` 对象，并且不具有 **`Symbol.search`** 方法，则会使用 `new RegExp(regexp)` 将其隐式转换为 `RegExp`。
+
+#### 返回值
+
+如果匹配成功，则返回正则表达式在字符串中首次匹配的索引；否则，返回 -1。
+
+#### 描述
+
+`String.prototype.search()` 方法的实现非常简单 ，它只是使用字符串作为第一个参数调用了参数的 **`Symbol.search`** 方法。
+实际的实现来自于 `RegExp.prototype[@@search]()`。
+
+`Symbol.search` 函数接收一个参数 调用`search()`方法的字符串。它的返回值成为 `search()`的返回值。在这种情况下，`search()` 的行为完全由 `@@search` 方法定义
+
+```javascript
+class FooSearcher {
+  static [Symbol.search](target) {
+    return target.indexOf("foo");
+  }
+}
+
+console.log("foobar".search(FooSearcher)); //0
+console.log("barfoo".search(FooSearcher)); //3
+console.log("barbaz".search(FooSearcher)); //-1
+```
