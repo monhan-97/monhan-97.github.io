@@ -74,19 +74,25 @@ const bar = new Bar();
 console.log(bar instanceof Bar); // true
 ```
 
-### `instanceof` 原理
+### instanceof
 
-- 首先，它会检查 ` .prototype` 是否存在于 `object` 的原型链上。如果存在，那么返回 `true`。
-- 如果 `constructor.prototype` 不在 `object` 的原型链上，那么它会继续查找 `constructor.prototype` 的原型对象的原型链，直到找到 `Object.prototype`。如果仍然没有找到，那么返回 `false`。
+`instanceof` 运算符用于检测构造函数的 `prototype` 属性是否出现在某个实例对象的原型链上。
+
+下面是 `instanceof` 运算符的工作原理的简单步骤：
+
+- 首先，它检查对象的 **`proto`** 属性，也就是对象的原型。
+- 如果对象的原型与指定构造函数的原型相等，那么返回 `true`。
+- 如果对象的原型不等于指定构造函数的原型，则继续向上查找，将对象的原型设置为当前原型的原型，并重复步骤 2。
+- 如果在原型链的顶端（即 `Object.prototype`）还没有找到匹配的构造函数，那么返回 `false`。
 
 ```typescript
 function Foo() {}
 const foo = new Foo();
-console.log(Object.getPrototypeOf(foo) === Foo.prototype); // true
+console.log(foo instanceof Foo); // true, 因为Object.getPrototypeOf(foo) === Foo.prototype
 
 function Bar() {}
 const bar = new Bar();
-console.log(Object.getPrototypeOf(bar) === Bar.prototype); // true
+console.log(bar instanceof Bar); // true, 因为Object.getPrototypeOf(bar) === Bar.prototype
 ```
 
 在 `ES6` 中`instanceof`操作符会使用 `Symbol.hasInstance`函数来确定关系 以`Symbol.hasInstance`为 key 的函数会执行同样的操作
@@ -375,4 +381,42 @@ class FooSearcher {
 console.log("foobar".search(FooSearcher)); //0
 console.log("barfoo".search(FooSearcher)); //3
 console.log("barbaz".search(FooSearcher)); //-1
+```
+
+## Symbol.species
+
+**`Symbol.species`** 是个函数值属性，这个函数作为创建派生对象的构造函数。
+
+### 什么叫派生对象
+
+`派生对象` 是指通过继承一个基类（也称为父类或超类）来创建的对象。
+
+### 实例
+
+使用 Symbol.species
+
+```javascript
+class Baz extends Array {
+  static get [Symbol.species]() {
+    return Array;
+  }
+}
+
+const baz = new Baz(1, 2, 3);
+console.log(baz instanceof Baz); // true
+
+const mapped = baz.map((x) => x * x);
+console.log(mapped instanceof Baz); // false
+```
+
+不使用 Symbol.species
+
+```javascript
+class Baz extends Array {}
+
+const baz = new Baz(1, 2, 3);
+console.log(baz instanceof Baz); // true
+
+const mapped = baz.map((x) => x * x);
+console.log(mapped instanceof Baz); // true
 ```

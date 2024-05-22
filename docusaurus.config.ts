@@ -4,7 +4,7 @@ import type * as Preset from "@docusaurus/preset-classic";
 
 const githubURL = "https://github.com/monhan-97/monhan-97.github.io";
 
-const lightTheme = themes.oneLight;
+const lightTheme = themes.oneDark;
 
 const darkTheme = themes.oneDark;
 
