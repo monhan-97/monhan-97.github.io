@@ -420,3 +420,49 @@ console.log(baz instanceof Baz); // true
 const mapped = baz.map((x) => x * x);
 console.log(mapped instanceof Baz); // true
 ```
+
+## Symbol.split
+
+**`Symbol.split`** 一个正则表达式的方法， 该方法 指向一个正则表达式的索引处分割字符串的方法 。 可以被 `String.prototype.split` 方法使用。
+正则表达式的原型上默认有`Symbol.split`为 `key` 函数的定义
+
+```javascript
+console.log(RegExp.prototype[Symbol.split]); // ƒ [Symbol.split]() { [native code] }
+
+console.log("foobarbaz".split(/bar/)); // ['foo','baz']
+```
+
+### String.prototype.split
+
+`split()`，通过搜素模式将字符串分割成一个有序的子串列表，将这些子串放入一个数组，并且返回该数组。
+
+#### 参数
+
+- `separator`
+
+  描述每个分割应该发生在哪里的模式。可以是 `undefined`，一个字符串,或者一个具有 **`Symbol.split`** 方法的对象(正则表达式)。
+  省略`separator` 或传递 `undefined` 会导致 `split()` 返回一个只包含所调用字符串数组,所有不是 `undefined` 的值或不具有 **`Symbol.split`** 方法的对象都被强制转换为字符串。
+
+  如果 `separator` 是一个非空字符串，目标字符串会被所有匹配的 `separator` 分割，结果中不包括 `separator`
+
+- `limit`可选
+
+  一个非负整数，指定数组中包含的子字符串的数量限制。
+
+#### 返回值
+
+在给定字符串中出现 `separator` 的每一个点上进行分割而成的字符串数组
+
+#### 描述
+
+`Symbol.split` 函数接收两个参数 调用`split()`方法的字符串。它的返回值成为 `split()`的返回值。在这种情况下，`split()` 的行为完全由 `@@split` 方法定义
+
+```javascript
+class FooSplitter {
+  static [Symbol.split](target, limit) {
+    return target.split("foo");
+  }
+}
+
+console.log("barfoobaz".split(FooSplitter)); //['bar','baz']
+```
