@@ -466,3 +466,52 @@ class FooSplitter {
 
 console.log("barfoobaz".split(FooSplitter)); //['bar','baz']
 ```
+
+## Symbol.toPrimitive
+
+**`Symbol.toPrimitive`** 一个方法 该方法可以用于定义对象的默认转换行为。 指定了一种接受首选类型并返回对象原始值的表示的方法 , 它被所有的强类型转换制算法优先调用。
+
+在执行表达式 `3 + foo` 时，会先尝试调用对象的 `valueOf()` 方法来获取其原始值。如果 `valueOf()` 方法返回的是一个原始值（比如数字）。
+那么加法运算就会继续进行，并以这个原始值作为结果。如果 `valueOf()` 方法返回的仍然是一个对象，那么会继续尝试调用对象的 `toString()` 方法来获取字符串表示形式，然后再进行加法运算。
+
+```javascript
+class Foo {}
+
+let foo = new Foo();
+
+console.log(3 + foo); // 3[object Object];
+console.log(3 - foo); // NaN
+console.log(String(foo)); // [object Object];
+
+class Bar {
+  [Symbol.toPrimitive] = function (hint) {
+    switch (hint) {
+      case "number":
+        return 3;
+      case "string":
+        return "string bar";
+      default:
+        return "default bar";
+    }
+  };
+}
+
+let bar = new Bar();
+//
+console.log(3 + bar); // '3default bar';
+console.log(3 - bar); // 0
+console.log(String(bar)); // string bar;
+```
+
+### 描述
+
+在 **`Symbol.toPrimitive`** 属性（用作函数值）的帮助下，对象可以转换为一个原始值。
+该函数被调用时，会被传递一个字符串参数 `hint`，表示要转换到的原始值的预期类型。`hint` 参数的取值是 `"number"`、`"string"` 和 `"default"` 中的任意一个。
+
+`"number"`hint 用于强制数字类型转换方法，`"string"` hint 用于强制字符串类型转换算法。`default`hint 用于强制原始值转换算法。hint 仅是作为首选项的偏弱的信号提示。
+
+实现时，可以自由忽略它（就像 **`Symbol.prototype[@@toPrimitive]()`** 一样）。该语言不会在 `hint` 和结果类型之间强制校正，尽管 **`[@@toPrimitive]()`** 必须返回一个原始值，否则将抛出 **`TypeError`**。
+
+## Symbol.toStringTag
+
+## Symbol.unscopables
