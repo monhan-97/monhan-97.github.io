@@ -514,4 +514,43 @@ console.log(String(bar)); // string bar;
 
 ## Symbol.toStringTag
 
+**`Symbol.toStringTag`** 该符号作为一个字符串值的属性 用于创建对象的默认字符串描述，由内置方法`Object.prototype.toString()`使用
+
+通过 `Object.prototype.toString()`方法获取对象标识时，会检索**`Symbol.toStringTag`**指定的实例标识符，默认为 `“Object"`,内置类型已经指定了这个值
+但是自定义内型需要明确定义。
+
+```javascript
+let o = new Object();
+console.log(o.toString()); // [object Object]
+console.log(o[Symbol.toStringTag]); // undefined
+
+const set = new Set();
+console.log(set.toString()); // [object Set]
+console.log(set[Symbol.toStringTag]); // Set
+
+class ValidatorClass {
+  [Symbol.toStringTag] = "Validator";
+}
+console.log(new ValidatorClass().toString()); // [object Validator];
+console.log(new ValidatorClass()[Symbol.toStringTag]); // Validator
+```
+
 ## Symbol.unscopables
+
+**`Symbol.unscopables`** 这个符号作为一个属性表示`一个对象，该对象所有的以及继承的属性都会从关联对象的 with 环境绑定中解除`。
+设置这个符号并让其映射对应属性的 `key` 为 `true`,就可以阻止该属性出现在 `with` 环境绑定中.
+
+```javascript
+let o = { foo: "bar" };
+
+with (o) {
+  console.log(foo); //bar
+}
+
+o[Symbol.unscopables] = {
+  foo: true,
+};
+with (o) {
+  console.log(foo); //ReferenceError
+}
+```
