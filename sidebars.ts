@@ -73,6 +73,7 @@ const sidebars: SidebarsConfig = {
             "Javascript/data-type/string",
             "Javascript/data-type/symbol",
             "Javascript/data-type/internal-symbol",
+            "Javascript/data-type/object",
           ],
         },
       ],
