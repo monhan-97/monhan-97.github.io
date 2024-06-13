@@ -160,11 +160,11 @@ Object.defineProperties(o, {
 console.log(o); // {[Symbol(foo)]:"foo val",[Symbol(bar)]:"bar val",[Symbol(baz)]:"baz val",[Symbol(qux)]:"qux val"}
 ```
 
-- `Object.getOwnPropertyNames()`返回对象实例的**常规属性**数组 (包括**不可枚举属性**，但**不包括使用 Symbol 值作为名称的属性**）,
+- `Object.getOwnPropertyNames()`返回对象实例的**常规属性**数组 (包括**不可枚举属性**，但**不包括使用 Symbol 值作为名称的属性和原型中的属性**）,
 - `Object.getOwnPropertySymbols()`返回对象实例的**`Symbol`符号属性的数组**。
 - `Object.getOwnPropertyDescriptors()`返回同时包含常规和 `Symbol`符号属性描述符的对象。
 - `Reflect.ownKeys()`会返回两种类型的健
-- `Object.keys()` 返回对象实例 **可枚举的字符串键属性**名组成数组 (但**不包括使用 Symbol 值作为名称的属性**)
+- `Object.keys()` 返回对象实例 **可枚举的字符串键属性名** 组成数组 (但**不包括使用 Symbol 值作为名称的属性和原型中的属性**)
 
 ```javascript
 let s1 = Symbol("foo");

@@ -1,0 +1,158 @@
+# Object 类型
+
+**`Object`** 是 `JavaScript` 的一种数据类型, 它用于存储各种键值集合和更复杂的实体。
+可以通过 `Object()` 构造函数或者使用`对象字面量`的方式创建对象。
+
+## 描述
+
+在 `JavaScript`中，几乎所有的对象都是 `Object` 的实例；一个典型的对象从`Object.prototype`继承属性(包括方法)。
+
+## null 原型对象
+
+从 `Object.create(null)` 创建出来的对象不会继承`Object.prototype`的属性和方法。
+这在调试时尤其需要注意，因为常见的对象属性转换/检测实用方法可能会产生错误或丢失信息
+
+`Object.prototype.toString()` 方法的缺失通常会使得调试变得困难：
+
+```javaScript
+const normalObj = {}; // 创建一个普通对象
+const nullProtoObj = Object.create(null); // 创建一个 "null" 原型对象
+
+console.log(`normalObj 是：${normalObj}`); //  normalObj 是：[object Object]
+console.log(`nullProtoObj 是：${nullProtoObj}`); // TypeError: Cannot convert object to primitive value
+```
+
+在实践中，null 原型对象通常被用作 map 的简单替代品。由于存在 Object.prototype 属性，会导致一些错误：
+
+```javaScript
+const ages = { alice: 18, bob: 27 };
+
+function hasPerson(name) {
+  return name in ages;
+}
+
+function getAge(name) {
+  return ages[name];
+}
+
+hasPerson("hasOwnProperty"); // true
+getAge("toString"); // ƒ toString() { [native code] }
+```
+
+使用一个 null 原型对象可以消除这种风险，同时不会令 hasPerson 和 getAge 函数变得复杂：
+
+```javaScript
+const ages = Object.create(null, {
+  alice: { value: 18, enumerable: true },
+  bob: { value: 27, enumerable: true },
+});
+hasPerson("hasOwnProperty"); // false
+getAge("toString"); // undefined
+
+```
+
+## 从对象中删除属性
+
+一个对象本身没有任何方法可以,（像 `Map.prototype.delete()` 一样）删除自己的属性。要删除一个对象的属性，必须使用 `delete运算符`
+
+## 每个 Object 实例都会有如下的属性和方法:
+
+### constructor
+
+用于创建当前对象的函数 在之前的例子中 这个属性的值就是`Object()`函数。
+
+### hasOwnProperty(prototypeName)
+
+`hasOwnProperty()`方法返回一个布尔值，用于判断当前实例对象(不是原型),是否存在给定的属性名称。
+
+```javaScript
+const object1 = {};
+object1.property1 = 42;
+
+console.log(object1.hasOwnProperty('property1')) // true;
+console.log(object1.hasOwnProperty('toString')) // false;
+console.log(object1.hasOwnProperty('hasOwnProperty')) // false;
+```
+
+#### 参数
+
+- `prop`
+
+  要测试的属性的`字符串`名称或者 `Symbol`。
+
+- 返回值
+
+  如果对象有指定属性作为自有属性，则返回 `true`，否则返回 `false`
+
+#### 描述
+
+如果指定的属性是对象的直接属性——即使值为 `null` 或者 `undefined`，
+**`hasOwnProperty()`** 方法也会返回 `true`。如果属性是继承的，或者根本没有声明该属性，则该方法返回 `false`
+
+与`in运算符`不同的是，该方法不会在对象原型链中检查指定的属性
+
+#### 使用 hasOwnProperty 测试自有属性是否存在
+
+以下代码展示了如何确定 `example` 对象包含了一个名为 `prop` 的属性。
+
+```javaScript
+const example = {};
+example.hasOwnProperty("prop"); // false
+
+example.prop = "exists";
+example.hasOwnProperty("prop"); //  true
+
+example.prop = null;
+example.hasOwnProperty("prop"); // true
+
+example.prop = undefined;
+example.hasOwnProperty("prop"); // true
+```
+
+#### 直接属性 vs 继承属性
+
+以下示例区分了直接属性和通过原型链继承的属性：
+
+```javaScript
+const example = {};
+example.prop = "exists";
+
+// `hasOwnProperty` 仅对直接属性返回 true：
+example.hasOwnProperty("prop"); // true
+example.hasOwnProperty("toString"); // false
+example.hasOwnProperty("hasOwnProperty"); // false
+
+// 对于直接或继承的属性，`in` 运算符将返回 true：
+"prop" in example; // true
+"toString" in example; // true
+"hasOwnProperty" in example; // true
+```
+
+#### 由 Object.create(null) 创建的对象
+
+```javaScript
+const foo = Object.create(null);
+foo.prop = "exists";
+foo.hasOwnProperty("prop"); // Uncaught TypeError: foo.hasOwnProperty is not a function
+```
+
+#### 遍历对象的属性
+
+```javaScript
+Object.prototype.gender = '男';
+
+const buz = {
+  fog: "stack",
+};
+
+for (const name in buz) {
+  if (buz.hasOwnProperty(name)) {
+    console.log(`this is fog (${name}) for sure. Value: ${buz[name]}`);
+  } else {
+    console.log(name); // toString 或其他的方法等
+  }
+}
+
+// this is fog (fog)  for sure. Value:stack
+// gender
+```
