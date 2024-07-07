@@ -133,6 +133,16 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: "category",
+      label: "浏览器渲染原理",
+      link: {
+        type: "generated-index",
+        slug: "/browser-render",
+        keywords: ["浏览器渲染原理"],
+      },
+      items: ["browser-render/parse-html"],
+    },
+    {
+      type: "category",
       label: "Redux",
       link: {
         type: "generated-index",
