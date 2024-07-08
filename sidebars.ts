@@ -139,7 +139,11 @@ const sidebars: SidebarsConfig = {
         slug: "/browser-render",
         keywords: ["浏览器渲染原理"],
       },
-      items: ["browser-render/parse-html"],
+      items: [
+        "browser-render/parse-html",
+        "browser-render/recalculate-style",
+        "browser-render/reflow",
+      ],
     },
     {
       type: "category",
