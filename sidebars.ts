@@ -79,7 +79,10 @@ const sidebars: SidebarsConfig = {
         {
           type: "category",
           label: "操作符",
-          items: ["Javascript/operator/unary-operator"],
+          items: [
+            "Javascript/operator/unary-operator",
+            "Javascript/operator/bitwise-operator",
+          ],
         },
       ],
     },
