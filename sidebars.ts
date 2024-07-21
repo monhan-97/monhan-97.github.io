@@ -146,6 +146,9 @@ const sidebars: SidebarsConfig = {
         "browser-render/parse-html",
         "browser-render/recalculate-style",
         "browser-render/reflow",
+        "browser-render/layer",
+        "browser-render/repaint",
+        "browser-render/tiling",
       ],
     },
     {
