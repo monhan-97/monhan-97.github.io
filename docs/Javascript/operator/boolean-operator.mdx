@@ -1,0 +1,128 @@
+# 布尔操作符
+
+对于编程语言来说， 布尔操作符跟相等操作符几乎同样重要。 如果没有能力测试两个值得关系，那么像 if-else 和循环这样得语句也没有什么用。
+
+布尔操作符一共有三个: `逻辑非(!)`,`逻辑与(&&)`,`逻辑或(||)`。
+
+## 逻辑非
+
+逻辑非由一个叹号`(!)`表示，可应用给`ECMAScript`中的任何值。这个操作符始终返回布尔值，无论应用到的是什么数据类型。
+
+逻辑非操作符首先将操作数转换为布尔值，然后在对其取反。
+
+逻辑非操作符会遵循如下规则:
+
+- 如果操作数是`对象`，则返回 `false`
+- 如果操作数是`空字符串`,则返回 `true`
+- 如果操作数是`非空字符串`，则返回 `false`
+- 如果操作数是`数值0`，则返回 `true`
+- 如果操作数是`非0数值(包括Infinity)`，则返回 `false`
+- 如果操作数是`null`，则返回 `true`
+- 如果操作数是`NaN`，则返回 `true`
+- 如果操作数是`undefined`，则返回 `true`
+
+```javascript
+console.log(!{}); //false;
+console.log(!""); //true;
+console.log(!"blue"); //false;
+console.log(!0); //true
+console.log(!12345); //false
+console.log(!null); //true
+console.log(!NaN); //true
+console.log(!undefined); //true
+```
+
+逻辑非操作符也可以用于把任意值转换为布尔值。同时使用两个叹号(!!),相当于调用了 `转型函数Boolean()`
+
+```javascript
+console.log(!!"blue"); //true
+console.log(!!0); //false
+console.log(!!NaN); //false
+console.log(!!""); //false
+console.log(!!12345); //true
+```
+
+## 逻辑与
+
+逻辑与操作符由 `两个AND符号(&&)`表示, 如下所示:
+
+```javascript
+let result = true && false;
+```
+
+| 第一个操作数 | 第二个操作数 | 结果  |
+| ------------ | ------------ | ----- |
+| true         | true         | true  |
+| true         | false        | false |
+| false        | true         | false |
+| false        | false        | false |
+
+逻辑与操作符可用于任何类型的操作数,不限于布尔值。
+
+如果有操作数不是布尔值，则逻辑与并一定会返回布尔值, 而是遵循如下规则：
+
+- 如果第一个操作数是对象，则返回第二个操作数
+- 如果第二操作是对象，则只有第二个操作数求值为 `true` 才会返回该对象。
+- 如果两个操作数都是对象，则返回第二个操作数。
+- 如果有一个操作数是`null`,则返回`null`
+- 如果有一个操作数是`NaN`,则返回`NaN`
+- 如果有一个操作数是`undefined`,则返回`undefined`
+
+逻辑与操作符是一种短路操作符，如果第一个操作数是 `false`,那么无论第二个操作数是什么值，结果也不可能等于 `true`。
+
+```javaScript
+let found = true;
+let result = (found&&someUndeclaredVariable) //Error  ReferenceError: someUndeclaredVariable is not defined
+console.log(result); //出错了所以不会执行这一行
+```
+
+上面的代码之所以会出错,是因为 `someUndeclaredVariable` 没有事先定义 ,所以当逻辑与操作符对他求值的时候就会报错。
+变量 `found` 的值是 `true`,逻辑与操作符会继续求值变量`someUndeclaredVariable`,由于`someUndeclaredVariable`没有定义,因此就报错了
+
+```javaScript
+let found = false;
+let result = (found&&someUndeclaredVariable) //不会出错
+console.log(result); //成功执行
+```
+
+这里,`console.log`会成功执行。即使变量 `someUndeclaredVariable` 没有定义，由于第一个操作数是 `false`, 所以逻辑与操作符不会对第二个操作数进行求值
+
+## 逻辑或
+
+逻辑或操作符由 `两个OR符号(||)`表示, 如下所示:
+
+```javascript
+let result = true || false;
+```
+
+| 第一个操作数 | 第二个操作数 | 结果  |
+| ------------ | ------------ | ----- |
+| true         | true         | true  |
+| true         | false        | true  |
+| false        | true         | true  |
+| false        | false        | false |
+
+逻辑与操作符遵循如下规则:
+
+- 如果第一个操作数是对象，则返回第一个操作数
+- 如果第一个操作数是 false,则返回第二个操作数
+- 如果两个操作数都是对象，则返回第一个操作数。
+- 如果两个操作数是`null`,则返回`null`
+- 如果两个操作数是`NaN`,则返回`NaN`
+- 如果两个操作数都是`undefined`,则返回`undefined`
+
+和逻辑与类似,逻辑或操作符也具有短路的特性。只不过对逻辑或而言, 第一个操作数求值为 `true`,第二个操作数就不会被在求值了。
+
+```javaScript
+let found = true;
+let result = (found || someUndeclaredVariable) //不会出错
+console.log(result); //成功执行
+```
+
+变量 `someUndeclaredVariable` 没有事先定义,变量 `found` 的值是 `true`,所以逻辑或操作符不会继续求值变量 `someUndeclaredVariable`, 直接返回 true
+
+```javaScript
+let found = false;
+let result = (found || someUndeclaredVariable) // Error  ReferenceError: someUndeclaredVariable is not defined
+console.log(result); // 出错了所以不会执行这一行
+```
