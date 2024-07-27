@@ -150,6 +150,7 @@ const sidebars: SidebarsConfig = {
         "browser-render/layer",
         "browser-render/repaint",
         "browser-render/tiling",
+        "browser-render/raster",
       ],
     },
     {
