@@ -100,6 +100,7 @@ const sidebars: SidebarsConfig = {
         "NetWork/client-and-sever",
         "NetWork/url",
         "NetWork/http-protocol",
+        "NetWork/tcp-ip-model",
       ],
     },
     {
@@ -151,6 +152,8 @@ const sidebars: SidebarsConfig = {
         "browser-render/layer",
         "browser-render/repaint",
         "browser-render/tiling",
+        "browser-render/raster",
+        "browser-render/complete-process",
       ],
     },
     {
