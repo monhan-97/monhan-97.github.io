@@ -1,0 +1,154 @@
+# cookie
+
+## 什么是 cookie
+
+**Cookie(HTTP cookie)** 是一种由网站服务器发送到用户浏览器,并存储在用户设备上的小型文本文件。
+
+它通常用于记录用户的状态信息、用户行为信息或其他一些数据，以便在用户访问同一网站时进行识别和跟踪。
+
+## cookie 的组成
+
+- **key 和 value 键值对**:
+
+```javascript
+document.cookie = "username = test";
+```
+
+- **domain 域**
+
+  表示这个 `cookie`是属于哪个网站下的。
+
+  指定可以访问 `cookie` 的域名。例如，一个设置为 `.example.com` 的 `cookie` 将在 `www.example.com` 和 `blog.example.com` 中可用。
+
+```javascript
+document.cookie = "username = test;domain=example.com";
+```
+
+- **path 路径**
+
+  指定了可以访问 `cookie` 的路径。例如，一个设置为 `/products` 的 `cookie` 只在 `www.example.com/products` 页面下可用
+
+```javascript
+document.cookie = "username = test;path=/abc";
+```
+
+- **expires 过期时间**:
+
+  指定 `cookie` 的有效期限。可以是会话 `cookie`（在浏览器关闭时失效）或持久性 `cookie`（在指定的过期日期之前有效）。
+
+  若 cookie 不设置 `Expires` 或 `Max-Age` 属性，则其为**会话期 cookie**。**会话期 cookie** 会在客户端关闭时被移除。
+
+```javascript
+document.cookie = "username = test;expires=Aug, 31 Dec 2024 23:59:59 GMT";
+```
+
+- **max-age 最大有效时间**
+
+  指定 `cookie` 的有效时间，以秒为单位，从设置 `cookie` 的时间开始计算
+
+  若 cookie 不设置 `Expires` 或 `Max-Age` 属性，则其为**会话期 cookie**。**会话期 cookie** 会在客户端关闭时被移除。
+
+```javascript
+document.cookie = "username = test;max-age=3600"; // 1小时
+```
+
+- **httponly**
+
+  设置 `cookie`是不是只能用于传输。 如果设置了这个值，则表示该 `cookie`只能用于传输, 不允许客户端通过 `JavaScript` 访问 `cookie`。
+  从而降低跨站点脚本攻击`(XSS)`的风险。
+
+  这个属性只能通过服务端设置,不支持客户端配置这个属性。
+
+- **secure**
+
+  指示浏览器只在加密的 `HTTPS 连接` 中发送 `cookie`。这可以帮助保护用户数据的安全性
+
+```javascript
+document.cookie = "username = test;secure=true";
+```
+
+## domain 域的设置规则
+
+- **域名格式**:
+
+  `domain 属性值`必须是有效的域名。不能使用 `IP 地址`或其他`非域名格式`;
+
+- **子域名支持**:
+
+  可以指定一个`子域名`或`更高级别的域名`。
+
+  例如，如果你的网站是 `www.example.com`,可以将 `cookie` 的 `domain` 设置为 `example.com` 这样 `example.com` 下的所有子域名（如 `www.example.com` 和 `blog.example.com`）都可以访问这个 `Cookie`。
+
+- **主域名的限制**:
+
+  `domain` 属性的值必须是当前访问的域名的子域或当前域名本身。
+
+  例如，如果你在 `www.example.com` 上设置 `cookie`，你不能将 `domain` 设置为 `otherdomain.com`。
+
+- **大小写不敏感**:
+
+  域名部分是大小写不敏感的，即 `example.com` 和 `EXAMPLE.COM` 被认为是相同的。
+
+- **域名前缀**:
+
+  最好不要将 `domain` 属性设置为本地域名（例如，`www.example.com` 不要设置为 `example.com` 的子域),可以设置为根域名(example.com),以便所有子域都能访问这个 Cookie。
+
+- **默认域**:
+
+  如果不设置 `domain` 属性,`cookie` 的默认域将是当前访问的域名。
+
+```javascript
+// 设置 Domain=example.com 的 Cookie 将在 example.com 和所有子域名（如 www.example.com, blog.example.com）下可用。
+document.cookie = "username = test;domain=example.com";
+
+//设置 Domain=www.example.com 的 Cookie 仅在 www.example.com 下可用，而在 example.com 或其他子域名下不可用。
+document.cookie = "username = test;domain=www.example.com";
+```
+
+## cookie 在请求中的处理
+
+要确保一个 Cookie 被附带到请求中，它需要满足以下条件：
+
+- **cookie 没有过期**
+
+- **cookie 中的 domain 和这次请求的 domain 匹配**
+
+- **cookie 中的 path 和这次请求的 path 匹配**
+
+- **验证 cookie 的安全传输**
+
+  - 如果 `cookie` 中 `secure`为 true,则这次请求的协议必须是 `https`
+  - 如果 `cookie` 中 `secure`为 false,则这次请求的协议可以是 `https` 也可以是 `http`
+
+浏览器会把符合上述条件的`cookie`,自动的放置到请求头中去。
+
+## 服务端设置 cookie
+
+服务端可以通过`响应头`,来告诉浏览器如何设置 `cookie`。比如
+
+响应头按照下面的格式来设置:
+
+```
+set-cookie:cookie1
+set-cookie:cookie2
+set-cookie:cookie3
+...
+```
+
+通过这种模式,就可以在一次响应中设置多个 `cookie`。其中 `cookie` 的格式如下:
+
+```
+key=value;path=?;domain=?;expires=?;max-age=?;secure=?;http-only=?;
+```
+
+如果服务端响应的`cookie`满足条件,并且浏览器已经存在一摸一样的 `cookie`(**path**,**domain** 相同),则会自动覆盖之前的设置。
+
+## 删除 cookie
+
+删除 `cookie` 实际上就是修改 `cookie`
+
+```javascript
+document.cookie = "username = test;max-age=-1";
+```
+
+浏览器按照要求修改了 `cookie`之后，发现 `cookie` 已经过期于是会自动删除 `cookie`

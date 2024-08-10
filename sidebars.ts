@@ -101,6 +101,7 @@ const sidebars: SidebarsConfig = {
         "NetWork/url",
         "NetWork/http-protocol",
         "NetWork/tcp-ip-model",
+        "NetWork/cookie",
       ],
     },
     {
