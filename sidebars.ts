@@ -102,6 +102,8 @@ const sidebars: SidebarsConfig = {
         "NetWork/http-protocol",
         "NetWork/tcp-ip-model",
         "NetWork/cookie",
+        "NetWork/jwt",
+        "NetWork/same-origin-policy",
       ],
     },
     {
