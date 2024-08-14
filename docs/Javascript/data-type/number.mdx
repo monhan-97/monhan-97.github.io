@@ -165,61 +165,60 @@ let floatNumber = 3.125e7; // 31250000
 
   - 如果字符串包含除上述情况之外的其他字符串 返回 `NaN`
 
-- 对象, 调用`valueOf()`方法 并按照上述规则转换返回的值，如果返回结果是 `NaN` 则调用 `toString()` 方法 在按照字符串的规则转换
-  `强制数字类型转换`和`强制基本类型转`换优先会调用该方法，而强制字符串转换会优先调用 `toString()`
+- 对象, 调用`valueOf()`方法返回的是一个原始值（比如数字）并按照上述规则转换返回的值，如果 `valueOf()` 方法返回的仍然是一个对象 则调用 `toString()` 方法 在按照字符串的规则转换
+
+```javascript
+console.log(
+  Number({
+    valueOf: () => {
+      return 1;
+    },
+  }) + 2
+); // 3
+```
+
+### Number.parseInt()
+
+考虑到用 `Number()` 函数转换字符串时相对复杂并且有点反常规，通常在需要得到整数的时可以优先使用 `parseInt()` 函数。
+`parseInt()`函数更加专注于字符串是否包含数值模式。
+
+- 字符串最前面的空格会被忽略,从第一个非空格字符串开始转换。如果第一个字符串不是 `加号` 或者 `减号` `parseInt()`会立即返回`NaN`
+  ```javascript
+  console.log(Number.parseInt("011")); // 11
+  console.log(Number.parseInt("+019")); // 19
+  console.log(Number.parseInt("")); // NaN Number('')返回0
+  console.log(Number.parseInt(null)); // NaN Number(null)返回0
+  ```
+- 如果第一个字符时数值字符，`加号` 或者 `减号` 则继续依次每个字符，直到字符串末尾，或者碰到非数值字符
 
   ```javascript
-  console.log(
-    Number({
-      valueOf: () => {
-        return 1;
-      },
-    }) + 2
-  ); // 3
+  console.log(Number.parseInt("1234blue")); // 1234
   ```
 
-  ### Number.parseInt()
+- `parseInt()` 函数也能识别不同的整数格式(十进制,八进制,十六进制)。
 
-  考虑到用 `Number()` 函数转换字符串时相对复杂并且有点反常规，通常在需要得到整数的时可以优先使用 `parseInt()` 函数。
-  `parseInt()`函数更加专注于字符串是否包含数值模式。
+  ```javascript
+  console.log(Number.parseInt("0xf")); // 15
+  ```
 
-  - 字符串最前面的空格会被忽略,从第一个非空格字符串开始转换。如果第一个字符串不是 `加号` 或者 `减号` `parseInt()`会立即返回`NaN`
-    ```javascript
-    console.log(Number.parseInt("011")); // 11
-    console.log(Number.parseInt("+019")); // 19
-    console.log(Number.parseInt("")); // NaN Number('')返回0
-    console.log(Number.parseInt(null)); // NaN Number(null)返回0
-    ```
-  - 如果第一个字符时数值字符，`加号` 或者 `减号` 则继续依次每个字符，直到字符串末尾，或者碰到非数值字符
+- 不同的数值格式很容易混淆 `parseInt()`函数 因此`parseInt()`也接收第二个参数用于指定底数(进制数)
+  如果未提供第二个参数或者将其设置为 0,则根据给定的字符串来自动判断其进制。
 
-    ```javascript
-    console.log(Number.parseInt("1234blue")); // 1234
-    ```
+  ```javascript
+  console.log(Number.parseInt("0xAF", 16)); // 15 按照16进制解析
+  console.log(Number.parseInt("10", 2)); // 2 按照2进制解析
+  console.log(Number.parseInt("10", 8)); // 8 按照8进制解析
+  console.log(Number.parseInt("AF")); // NaN
+  console.log(Number.parseInt("123", 10)); // 123
+  ```
 
-  - `parseInt()` 函数也能识别不同的整数格式(十进制,八进制,十六进制)。
+  ### Number.parseFloat()
 
-    ```javascript
-    console.log(Number.parseInt("0xf")); // 15
-    ```
+  `parseFloat()` 函数的工作方式和 `parseInt()` 函数类似 都是从位置 0 开始检测每个字符,
+  同样它也是解析到字符串末尾或者解析到无效的浮点字符串为止。 `parseFloat()`函数只能解析十进制的值 所以不能指定进制
 
-  - 不同的数值格式很容易混淆 `parseInt()`函数 因此`parseInt()`也接收第二个参数用于指定底数(进制数)
-    如果未提供第二个参数或者将其设置为 0,则根据给定的字符串来自动判断其进制。
-
-    ```javascript
-    console.log(Number.parseInt("0xAF", 16)); // 15 按照16进制解析
-    console.log(Number.parseInt("10", 2)); // 2 按照2进制解析
-    console.log(Number.parseInt("10", 8)); // 8 按照8进制解析
-    console.log(Number.parseInt("AF")); // NaN
-    console.log(Number.parseInt("123", 10)); // 123
-    ```
-
-    ### Number.parseFloat()
-
-    `parseFloat()` 函数的工作方式和 `parseInt()` 函数类似 都是从位置 0 开始检测每个字符,
-    同样它也是解析到字符串末尾或者解析到无效的浮点字符串为止。 `parseFloat()`函数只能解析十进制的值 所以不能指定进制
-
-    ```javascript
-    console.log(Number.parseFloat("0xA")); // 0
-    console.log(Number.parseFloat("1234blue")); // 2 1234
-    console.log(Number.parseFloat("22.5")); // 22.5
-    ```
+  ```javascript
+  console.log(Number.parseFloat("0xA")); // 0
+  console.log(Number.parseFloat("1234blue")); // 2 1234
+  console.log(Number.parseFloat("22.5")); // 22.5
+  ```
