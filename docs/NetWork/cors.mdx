@@ -1,0 +1,219 @@
+# 跨域资源共享(CORS)
+
+## 介绍
+
+`跨域资源共享(CORS)`全程为`(Cross-Origin Resource Sharing)`是一种基于 `HTTP` 头部的机制,允许服务器通过设置 `HTTP` 头部来控制哪些源可以访问其资源,从而解决`同源策略`带来的限制问题。
+
+`CORS` 是一种标准化的方法，能让服务器安全地暴露其资源给不同的源。
+
+不同的请求方式,会对服务器造成不同程度的影响,比如 **`GET 方法`** 通常只是获取一些服务器数据，而 **`POST 方法`** 可能会修改服务的数据。
+
+针对不用的请求 **CORS** 规定了三种不同的交互方式,分别是:
+
+- **简单请求**
+- **预检请求**
+- **附带身份凭证的请求**
+
+## 简单请求
+
+`简单请求` 不会触发 `CORS 预检请求`。满足以下条件的请求即为简单请求:
+
+- 请求方法属于下面的一种
+  - GET
+  - POST
+  - HEAD
+- 请求头只包含以下安全的属性:
+
+  - Accept
+  - Accept Language
+  - Content-Language
+  - Content-Type
+  - DPR
+  - Downlink
+  - Save-Data
+  - Viewport-Width
+  - Width
+
+- Content-Type 的值只有以下三种:
+  - text/plain
+  - application/x-www-form-urlencoded
+  - multipart/form-data
+
+下面是一些例子:
+
+```javascript
+// 简单请求
+fetch("http://crossdomain.com/api/news");
+
+// 不是简单请求 请求方法不满足
+fetch("http://crossdomain.com/api/news", {
+  method: "PUT",
+});
+
+// 不是简单请求 有额外的请求头
+fetch("http://crossdomain.com/api/news", {
+  headers: {
+    a: "1",
+  },
+});
+
+// 简单请求 POST请求方法 content-type默认为application/x-www-form-urlencoded
+fetch("http://crossdomain.com/api/news", {
+  method: "POST",
+});
+
+// 不是简单请求
+fetch("http://crossdomain.com/api/news", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+```
+
+## 简单请求的交互规范
+
+如果浏览器发现某个`跨域请求`是`简单请求`,会发生以下的事情:
+
+- ### 请求头中会自动添加 Origin 字段
+
+比如 在页面`http://my.com/index.html`中有以下代码造成了跨域。
+
+```javascript
+fetch("http://crossdomain.com/api/news");
+```
+
+请求发出后,请求头会是下面的格式:
+
+```javascript
+GET /api/news  HTTP/1.1
+HOST crossdomain.com
+Connection:keep-live
+...
+Refer:http://my.com/index.html
+Origin:http://my.com
+```
+
+`Origin`这个字段会告诉服务器,是哪个源地址在跨域请求
+
+### 服务器响应头中应包含 `Access-Control-Allow-Origin`
+
+当服务器收到请求后,如果允许该`跨域请求`访问,需要在响应头中添加`Access-Control-Allow-Origin`字段。
+
+该字段的值可以是:
+
+- `*` 表示所有请求都可以访问
+- `具体的源` 表示只有特定的源才可以访问
+
+## 预检请求
+
+当发起的`跨域请求`不符合`简单请求`条件的时候, 浏览器会发起一个`预检请求`,询问服务器是否允许实际请求。
+
+发起预检请求的流程如下:
+
+- 浏览器发送`预检请求`,询问浏览器是否允许。
+- 服务器允许
+- 浏览器发送真实请求
+- 服务器响应完成
+
+比如 在页面`http://my.com/index.html`中有以下代码造成了跨域。
+
+```javascript
+// 需要发送预检请求
+fetch("http://crossdomain.com/api/news", {
+  method: "POST",
+  headers: {
+    a: 1,
+    b: 2,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({ name: "123" }),
+});
+```
+
+当浏览器发现跨域的请求不是一个`简单请求`的时候,会按照下面的流程和服务器交互:
+
+### 浏览器发起预检请求,询问服务器是否允许
+
+```javascript
+OPTIONS /api/news  HTTP/1.1
+HOST crossdomain.com
+Connection:keep-live
+
+Refer:http://my.com/index.html
+Origin:http://my.com
+Acccess-Control-Request-Method:POST
+Acccess-Control-Request-Headers:a,b,Content-Type
+```
+
+可以看出, 这个不是我们想要发出的真实请求,请求不包含我们的响应头,也没有消息体。
+
+这是一个`预检请求`,他的目的是询问服务器,是否允许后续真实请求。
+
+`预检请求`有以下特性:
+
+- 没有请求体
+- 请求方法为`OPTIONS`
+- 请求头中包含:
+  - `Acccess-Control-Request-Method`:后续的真实请求将使用的请求方法。
+  - `Acccess-Control-Request-Headers`:后续的真实请求携带的请求头。
+  - `Origin`:请求的源地址。
+
+### 服务器允许
+
+服务器收到`预检请求`后,可以检查该请求中包含的信息，如果允许这样的请求，需要响应下面的消息格式。
+
+```javascript
+HTTP/1.1 200 OK
+Date Sat Aug 17 2024 21:53:13 GMT
+...
+
+Access-Control-Allow-Origin:http://my.com
+Access-Control-Allow-Method:POST
+Access-Control-Allow-Headers:a,b,content-type
+Access-Control-Allow-Max-Age:86400
+...
+```
+
+对于`预检请求`,不需要响应任何的消息体,只需要在响应头中添加:
+
+- **Access-Control-Allow-Origin**:表示允许的源地址
+- **Access-Control-Allow-Method**:表示允许后续真实请求的请求方法
+- **Access-Control-Allow-Headers**:表示允许改动的请求头
+- **Access-Control-Allow-Max-Age**:告诉浏览器,多少秒内,对于同样的`请求源`,`请求方法`,`请求头`,都不需要重复发送`预检请求`了
+
+如果服务器允许,就会发送真实的请求,后续的处理和简单请求相同。
+
+### 附带身份凭证的请求
+
+默认情况下,`跨域请求`并不会附带 `cookie`, 这样一来有些附带权限的操作就无法进行。
+
+不过可以通过简单的配置就可以实现附带`cookie`
+
+```javascript
+fetch(url, {
+  credentials: "include",
+});
+```
+
+这样`跨域请求`就会附带一个身份凭证
+
+当一个请求需要附带`cookie`的时候,无论是`简单请求`还是`预检请求` 都会在请求头中添加`cookie`字段。
+
+而服务器响应的时候需要明确告知客户端:服务端允许这样的**凭据**。需要在响应头中添加 **`Access-Control-Credentials:true`** 即可。
+
+对于一个附带身份凭证的请求,如果服务端没有明确告知,浏览器仍然被视为`跨域拒绝`。
+
+:::warning
+对于附带身份凭证的请求,服务器不能设置`Access-Control-Allow-Origin`为`*`
+:::
+
+## 额外补充
+
+### Access-Control-Expose-Headers
+
+如果想要在`响应体`里面获取`自定义的响应头`,需要设置`Access-Control-Expose-Headers`这个属性,让服务器把允许浏览器访问的头放入白名单。例如:
+
+```javascript
+Access-Control-Expose-Headers:a,b,authorization
+```
