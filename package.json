@@ -16,9 +16,9 @@
     "github-deploy": "cross-env GIT_USER=monhan-97 yarn run deploy"
   },
   "dependencies": {
-    "@docusaurus/core": "^3.4.0",
-    "@docusaurus/preset-classic": "^3.4.0",
-    "@docusaurus/theme-live-codeblock": "^3.4.0",
+    "@docusaurus/core": "^3.5.2",
+    "@docusaurus/preset-classic": "^3.5.2",
+    "@docusaurus/theme-live-codeblock": "^3.5.2",
     "@mdx-js/react": "^3.0.0",
     "clsx": "^2.1.0",
     "prism-react-renderer": "^2.3.1",
@@ -26,13 +26,13 @@
     "react-dom": "18.2.0"
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "^3.4.0",
-    "@docusaurus/tsconfig": "^3.4.0",
-    "@docusaurus/types": "^3.4.0",
+    "@docusaurus/module-type-aliases": "^3.5.2",
+    "@docusaurus/tsconfig": "^3.5.2",
+    "@docusaurus/types": "^3.5.2",
     "@tsconfig/docusaurus": "^2.0.2",
     "@types/react": "^18.2.47",
     "cross-env": "^7.0.3",
-    "typescript": "^5.3.3"
+    "typescript": "^5.5.4"
   },
   "browserslist": {
     "production": [
