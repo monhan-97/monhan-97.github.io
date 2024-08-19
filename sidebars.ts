@@ -86,6 +86,7 @@ const sidebars: SidebarsConfig = {
             "Javascript/operator/multiplicative-operator",
             "Javascript/operator/index-operator",
             "Javascript/operator/additive-operator",
+            "Javascript/operator/relational-operator",
           ],
         },
       ],
