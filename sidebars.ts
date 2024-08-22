@@ -107,6 +107,7 @@ const sidebars: SidebarsConfig = {
         "NetWork/jwt",
         "NetWork/same-origin-policy",
         "NetWork/cors",
+        "NetWork/enter-url",
       ],
     },
     {
