@@ -108,6 +108,8 @@ const sidebars: SidebarsConfig = {
         "NetWork/same-origin-policy",
         "NetWork/cors",
         "NetWork/enter-url",
+        "NetWork/download-file",
+        "NetWork/cache-protocol",
       ],
     },
     {
