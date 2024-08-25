@@ -110,6 +110,7 @@ const sidebars: SidebarsConfig = {
         "NetWork/enter-url",
         "NetWork/download-file",
         "NetWork/cache-protocol",
+        "NetWork/tcp-protocol",
       ],
     },
     {
