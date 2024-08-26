@@ -267,18 +267,18 @@ Promise.all = function (task) {
 Promise.allSettled = function (task) {
   const promiseHandlers = [];
   for (const iterator of task) {
-    iterator.push(
+    promiseHandlers.push(
       iterator.then(
         (data) => {
           return {
             value: data,
-            state: "fulfilled",
+            status: "fulfilled",
           };
         },
         (reason) => {
           return {
             reason: reason,
-            state: "rejected",
+            status: "rejected",
           };
         }
       )
