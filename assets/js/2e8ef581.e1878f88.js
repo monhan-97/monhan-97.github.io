@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkhuangmh_blog=self.webpackChunkhuangmh_blog||[]).push([[1639],{40:e=>{e.exports=JSON.parse('{"categoryGeneratedIndex":{"title":"Prettier","keywords":["prettier-config"],"slug":"/","permalink":"/docs/","sidebar":"tutorialSidebar","navigation":{"next":{"title":"\u4ec0\u4e48\u662f Prettier\uff1f","permalink":"/docs/prettier/what-is-prettier"}}}}')}}]);
