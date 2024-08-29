@@ -1,0 +1,87 @@
+# 相等操作符
+
+判断两个变量是否相等是变成中最重要的操作之一。
+
+## 等于和不等于
+
+`等于操作符号`用两个等于号`(==)`表示, 如果操作数相等则会返回 `true`。
+
+`不等于操作符号`用叹号和等于号表示`(!=)`, 如果两个操作数不相等则会返回`true`。
+
+这两个操作符都会先`执行类型转换`在确定操作数是否相等
+
+在转换操作数的类型时,相等和不相等操作符遵循如下规则：
+
+- 如果任一操作数是`布尔值`,则将其转换为**数值**在比较是否相等。`false`转换为`0`,`true`转换为`1`。
+
+```javascript
+false == 0; //true
+false == "0"; //true
+```
+
+- 如果一个操作数是`字符串`,另一个操作数是数值,则尝试将字符串将其转换为**数值**在比较是否相等。
+
+```javascript
+"0" == 0; //true
+```
+
+- 如果一个操作数是`对象`,另一个操作数不是。则调用`valueOf()`方法 如果返回的是一个原始值（比如数字）并按照上述规则转换返回的值。
+  如果 `valueOf()` 方法返回的仍然是一个对象 则调用 `toString()` 方法 在按照字符串的规则转换
+
+```javascript
+const obj = {};
+const obj1 = {
+  valueOf: function () {
+    return 123;
+  },
+};
+
+console.log(obj == 123); //false
+console.log(obj1 == 123); //true
+```
+
+- `null`和`undefined`比较的时候相等
+
+```javascript
+null == undefined; //true
+```
+
+- `null`和`undefined`不能转换为其他类型的值再进行比较
+
+```javascript
+null == 0; //false
+```
+
+- 如果有任一操作数是 `NaN`,相等操作符会返回`false`,不相等操作符返回`true`。
+
+```javascript
+NaN == 1; //false
+NaN != 1; //true
+```
+
+- 如果两个操作数都是 `NaN`,相等符也是返回`false`,不相等操作符也是返回`true`
+
+```javascript
+NaN == NaN; //false
+NaN != NaN; //true
+```
+
+- 如果两个操作数都是`对象`,先比较它们是不是同一个`对象`。如果两个操作数都指向同一个对象,则返回 `true`。否则两者不相等。
+
+```javascript
+const obj = {};
+const obj1 = obj;
+const obj2 = {};
+
+console.log(obj == obj1); //true
+console.log(obj == obj2); //false
+```
+
+## 全等和不全等
+
+它们会在比较之前`不执行类型转换`, 只有当两个值的类型和值都相等时才返回 `true`
+
+```javascript
+5 === "5"; //false
+5 == "5"; //true
+```
