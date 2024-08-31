@@ -113,6 +113,7 @@ const sidebars: SidebarsConfig = {
         "NetWork/download-file",
         "NetWork/cache-protocol",
         "NetWork/tcp-protocol",
+        "NetWork/performance",
       ],
     },
     {
