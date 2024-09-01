@@ -114,6 +114,8 @@ const sidebars: SidebarsConfig = {
         "NetWork/cache-protocol",
         "NetWork/tcp-protocol",
         "NetWork/performance",
+        "NetWork/resume-broken-download",
+        "NetWork/resume-broken-transfer",
       ],
     },
     {
