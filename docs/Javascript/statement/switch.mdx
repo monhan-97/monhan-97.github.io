@@ -1,0 +1,54 @@
+# switch 语句
+
+`switch`语句是与`if`语句紧密相关的一种`流控制语句`,如下所示:
+
+```javascript
+function switchStatement(i) {
+  switch (i) {
+    case 25:
+    case 35:
+      console.log("25 or 35");
+      break;
+    case 45:
+      console.log("45");
+      break;
+    default:
+      console.log("other");
+  }
+}
+
+switchStatement(25); //"25 or 35" ;
+switchStatement(45); //"45" ;
+switchStatement(46); //"other" ;
+```
+
+- 这里的每个`case(条件/分支)`相当于 `"如果表达式等于后面的值,则执行下面的语句。"`。
+- `break`关键字会导致代码执行跳出`switch`语句,如果没有会继续匹配下一个条件。
+- `default`关键字用于再任何条件都没有满足时指定默认执行的语句`(相当于else语句)`。
+- `switch`语句可以用于所有`数据类型`,因为可以使用`字符串`或者`对象`
+
+```javascript
+function switchStatement(num) {
+  switch (true) {
+    case num < 0:
+      console.log("Less than 0.");
+      break;
+    case num >= 0 && num <= 10:
+      console.log("Between 0 and 10.");
+      break;
+    case num > 10 && num <= 20:
+      console.log("Between 10 and 20.");
+      break;
+    default:
+      console.log("More than 20.");
+  }
+}
+
+switchStatement(-1); //"Less than 0." ;
+switchStatement(5); //"Between 0 and 10." ;
+switchStatement(15); //"Between 10 and 20." ;
+```
+
+:::warning
+switch 语句再比较每个条件的值时,会使用全等操作符,因此不会强制转换数据类型(比如,字符串"10"不等于 10)
+:::

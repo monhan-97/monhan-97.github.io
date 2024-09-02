@@ -90,6 +90,11 @@ const sidebars: SidebarsConfig = {
             "Javascript/operator/equality-operators",
           ],
         },
+        {
+          type: "category",
+          label: "语句",
+          items: ["Javascript/statement/switch"],
+        },
       ],
     },
     {
