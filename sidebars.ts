@@ -121,6 +121,7 @@ const sidebars: SidebarsConfig = {
         "NetWork/performance",
         "NetWork/resume-broken-download",
         "NetWork/large-file-upload",
+        "NetWork/domain",
         "NetWork/dns-parse",
       ],
     },
