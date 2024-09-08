@@ -111,6 +111,7 @@ const sidebars: SidebarsConfig = {
         "NetWork/http-protocol",
         "NetWork/tcp-ip-model",
         "NetWork/cookie",
+        "NetWork/encrypt",
         "NetWork/jwt",
         "NetWork/same-origin-policy",
         "NetWork/cors",
@@ -123,6 +124,7 @@ const sidebars: SidebarsConfig = {
         "NetWork/large-file-upload",
         "NetWork/domain",
         "NetWork/dns-parse",
+        "NetWork/ssl",
       ],
     },
     {
