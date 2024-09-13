@@ -125,6 +125,7 @@ const sidebars: SidebarsConfig = {
         "NetWork/domain",
         "NetWork/dns-parse",
         "NetWork/ssl",
+        "NetWork/http-version",
       ],
     },
     {
