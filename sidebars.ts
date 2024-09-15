@@ -32,16 +32,6 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: "category",
-      label: "HTML 知识点",
-      link: {
-        type: "generated-index",
-        slug: "/html",
-        keywords: ["html-semantics"],
-      },
-      items: ["html/html-semantics"],
-    },
-    {
-      type: "category",
       label: "Flex 布局",
       link: {
         type: "generated-index",
