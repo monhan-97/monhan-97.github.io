@@ -116,6 +116,8 @@ const sidebars: SidebarsConfig = {
         "NetWork/dns-parse",
         "NetWork/ssl",
         "NetWork/http-version",
+        "NetWork/websocket",
+        "NetWork/websocket-test",
       ],
     },
     {
