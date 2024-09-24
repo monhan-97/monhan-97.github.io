@@ -45,7 +45,7 @@ const sidebars: SidebarsConfig = {
       label: "Javascript",
       link: {
         type: "generated-index",
-        slug: "/script-tag",
+        slug: "/Javascript",
         keywords: ["Javascript"],
       },
       items: [
@@ -84,6 +84,11 @@ const sidebars: SidebarsConfig = {
           type: "category",
           label: "语句",
           items: ["Javascript/statement/switch"],
+        },
+        {
+          type: "category",
+          label: "变量、作用域与内存",
+          items: ["Javascript/scope/primitive-reference-value"],
         },
       ],
     },
