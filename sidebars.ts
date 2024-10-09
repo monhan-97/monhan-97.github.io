@@ -88,7 +88,10 @@ const sidebars: SidebarsConfig = {
         {
           type: "category",
           label: "变量、作用域与内存",
-          items: ["Javascript/scope/primitive-reference-value"],
+          items: [
+            "Javascript/scope/primitive-reference-value",
+            "Javascript/scope/execution-context",
+          ],
         },
       ],
     },

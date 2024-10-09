@@ -13,7 +13,7 @@
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids",
     "typecheck": "tsc",
-    "github-deploy": "cross-env GIT_USER=monhan-97 yarn run deploy"
+    "github-deploy": "cross-env GIT_USER=monhan-97 npm run deploy"
   },
   "dependencies": {
     "@docusaurus/core": "^3.5.2",
