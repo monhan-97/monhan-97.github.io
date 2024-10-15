@@ -91,6 +91,7 @@ const sidebars: SidebarsConfig = {
           items: [
             "Javascript/scope/primitive-reference-value",
             "Javascript/scope/execution-context",
+            "Javascript/scope/scope",
           ],
         },
       ],
