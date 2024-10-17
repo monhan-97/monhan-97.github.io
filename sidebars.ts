@@ -92,6 +92,7 @@ const sidebars: SidebarsConfig = {
             "Javascript/scope/primitive-reference-value",
             "Javascript/scope/execution-context",
             "Javascript/scope/scope",
+            "Javascript/scope/variable-declaration",
           ],
         },
       ],

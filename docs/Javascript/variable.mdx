@@ -206,11 +206,17 @@ if (true) {
 console.log(name); // Matt
 ```
 
-`const` 声明的限制只适用于它指向的变量的引用，如果`const`变量引用的是一个对象，那么修改这个对象内部的属性并不违反 `const` 的限制
+`const` 声明的限制只适用于它指向的变量的引用，如果`const`变量引用的是一个对象，那么修改这个对象内部的属性并不违反 `const` 的限制。
+
+如果想让整个对象都不能修改,可以使用`Object.freeze()`,这样再给属性赋值的时候虽然不会报错,但是会静默失败
 
 ```javascript
 const person = {};
 person.name = "Nicholas"; // ok
+
+const obj = Object.freeze({});
+obj.name = "Jake";
+console.log(obj.name); // undefined
 ```
 
 不能用 `const`来声明迭代变量 因为迭代变量会自增

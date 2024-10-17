@@ -1,0 +1,167 @@
+# 变量声明
+
+## 使用 var 的函数作用域声明
+
+使用`var`声明变量时, 变量会被自动添加到最近的**上下文**。在函数中,最接近的上下文就是**函数上下文**。
+
+```javascript
+function add(num1, num2) {
+  var sum = num1 + num2;
+  return sum;
+}
+
+add(1, 2);
+
+console.log(sum); // Uncaught ReferenceError: sum is not defined
+```
+
+如果变量未经声明就被初始化了,它就被自动添加到**全局上下文**中。
+
+在调用`add()`之后,`sum`被添加到了**全局上下文**中。在函数退出之后依然存在。
+
+```javascript
+function add(num1, num2) {
+  sum = num1 + num2;
+  return sum;
+}
+
+add(1, 2);
+
+console.log(sum); // 3
+```
+
+## 变量提升
+
+`var`声明会被拿到**函数**或者**全局作用域**的顶部,位于作用域中所有代码之前。
+
+```javascript
+var name = "Jack";
+
+// 等价于
+
+name = "Jack";
+var name;
+```
+
+```javascript
+function fn1() {
+  var name = "Jack";
+}
+
+// 等价于
+function fn2() {
+  name = "Jack";
+  var name;
+}
+```
+
+## 为什么会进行变量提升？
+
+- `Javascript`在代码**执行前**，会进行**语法检查**和**预编译**，这个操作只会执行一次，这么做就是为了提高性能。
+- 预编译会把所有 `var` 声明的**变量**和**函数**放在最前面。
+
+## 全局预编译
+
+- 创建**全局变量对象** GO (window 对象)
+- **变量声明**提前，将所有变量的声明放在最前面，赋值为 `undefined`,存在变量名相同， 只声明一个。
+- **函数声明**提前，将函数声明放在最前面。函数名如果跟变量名相同，函数名会覆盖变量名 值是函数体
+
+```javascript
+console.log(test);
+var test = 100;
+console.log(test);
+function test() {
+  console.log(111);
+}
+console.log(test);
+```
+
+分析如下:
+
+- 创建**全局对象** GO (window 对象)
+- **变量声明**提前———值为 `undefined`
+- 找到了变量声明:`var test = 100`;
+- `test: undefined`
+- 函数声明提前，同名覆盖 值为函数体
+- 找到了函数声明 `function() {...}`
+- `test: function(){}`
+- 预编译结束 从上到下执行代码
+
+## 函数预编译
+
+- 执行函数的时候,创建**活动对象** AO, (和**全局变量对象**类似)。
+- 找出**形参**和**变量声明**，值赋予 `undefined`。
+- **实参**,**形参值**相统一
+- 在函数体里面找到函数声明，值赋予函数体
+
+```javascript
+function test1(a) {
+     console.log(b);       //1  输出 function b(){}
+     var b = 0;
+     console.log(b);      //2  输出 0
+     console.log(a);      //3  输出 function a(){}
+
+     function a() {
+ ​
+     }
+
+     function b() {
+ ​
+     }
+ }
+
+test(1)
+```
+
+## 使用 let 的块级作用域声明
+
+- `let`关键字是**块级作用域**。
+- **块级作用域**由最近的一对花括号界定,比如`if块`,`while块`,`function块`。
+
+```javascript
+if (true) {
+  let a;
+}
+console.log(a); // ReferenceError: a is not a defined
+
+while (false) {
+  let b;
+}
+console.log(b); // ReferenceError: a is not a defined
+
+function foo() {
+  let c;
+}
+console.log(c); // ReferenceError: c is not a defined
+
+{
+  let d;
+}
+console.log(d); // ReferenceError: d is not a defined
+```
+
+- `let`关键字 在同一作用域内不能重复声明两次。重复的 `var` 声明 会被忽略。
+
+```javascript
+var a;
+var a;
+
+{
+  let b;
+  let b; // SyntaxError: Identifier 'b' has already been declared
+}
+```
+
+- 使用 `let` 关键字 在 `for` 循环中迭代变量不会泄漏到循环外部。
+
+```javascript
+for (let index = 0; index < 5; index++) {}
+console.log(index); // ReferenceError: index is not a defined
+
+for (var index = 0; index < 5; index++) {}
+console.log(index); // 5
+```
+
+## 使用 const 的块级作用域声明
+
+[变量](../variable.mdx)
