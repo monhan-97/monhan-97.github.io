@@ -93,6 +93,7 @@ const sidebars: SidebarsConfig = {
             "Javascript/scope/execution-context",
             "Javascript/scope/scope",
             "Javascript/scope/variable-declaration",
+            "Javascript/scope/garbage-collection",
           ],
         },
       ],
