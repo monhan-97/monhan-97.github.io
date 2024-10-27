@@ -517,7 +517,7 @@ console.log(String(bar)); // string bar;
 
 **`Symbol.toStringTag`** 该符号作为一个字符串值的属性 用于创建对象的默认字符串描述，由内置方法`Object.prototype.toString()`使用
 
-通过 `Object.prototype.toString()`方法获取对象标识时，会检索**`Symbol.toStringTag`**指定的实例标识符，默认为 `“Object"`,内置类型已经指定了这个值
+通过 `Object.prototype.toString()`方法获取对象标识时，会检索 **`Symbol.toStringTag`** 指定的实例标识符，默认为 `“Object"`,内置类型已经指定了这个值
 但是自定义内型需要明确定义。
 
 ```javascript

@@ -1,0 +1,125 @@
+# 日期
+
+要创建`日期`对象,使用`new`操作符来调用 **Date** 构造函数
+
+在不给**Date** 构造函数传参的情况下,创建的 **Date 对象** 将保存当前日期和时间。
+
+```javascript
+const date = new Date();
+```
+
+要基于`其他日期`和`时间`创建日期对象,必须传入对应的`毫秒数`来表示。
+
+**ECMAScript**为此提供了两个辅助方法 `Date.parse()`和`Date.UTC()`
+
+## Date.parse
+
+`Date.parse()`接收一个表示**日期的字符串**参数,尝试将这个字符串转换为**表示该日期的毫秒数**。
+
+`Date.parse()`支持下列日期格式:
+
+- **月/日/年**
+
+```javascript
+Date.parse("5/23/2019");
+```
+
+- **月名 日,年**
+
+```javascript
+Date.parse("May 23,2019");
+```
+
+- **周几 月名 日 年 时:分:秒 时区**
+
+```javascript
+Date.parse("Tue May 23 2019 00:00:00 GMT-0700");
+```
+
+- **ISO 8601 扩展格式 YYYY-MM-DDTMM-HH:mm:ss:sssz**
+
+```javascript
+Date.parse("2023-05-19");
+```
+
+### 注意事项
+
+- 如果传给 `Date.parse()`的字符串并不表示日期,则该方法就会返回 **NaN**
+
+```javascript
+Date.parse("foo"); // NaN
+```
+
+- 把表示日期的字符串传给**Date** 构造函数。
+
+如果直接把**表示日期的字符串**传给**Date** 构造函数。那么 Date 会在后台调用`Date.parse()`
+
+```javascript
+new Date("May 23,2019");
+// 等价于
+new Date(Date.parse("May 23,2019"));
+```
+
+## Date.UTC
+
+`Date.UTC()`方法返回**日期的毫秒数**。
+
+### 语法
+
+```javascript
+Date.UTC(year);
+Date.UTC(year, month);
+Date.UTC(year, month, day);
+Date.UTC(year, month, day, hour);
+Date.UTC(year, month, day, hour, minute);
+Date.UTC(year, month, day, hour, minute, second);
+Date.UTC(year, month, day, hour, minute, second, millisecond);
+```
+
+### 参数
+
+- **year**
+
+  一个表示年份的整数值。
+
+  从 **0 到 99** 的值会被映射到 **1900 至 1999 年**。其他的值则代表实际的年份
+
+- **month**
+
+  `0`（一月）到 `11`（十二月）之间的一个整数，表示月份。
+
+  从 `ECMAScript 2017` 开始，如果忽略该值，则默认为 `0`。
+
+- **date**
+
+  `1` 到 `31` 之间的一个整数，表示某月当中的第几天。如果忽略该值，则默认为 `1`。
+
+- **hour**
+
+  `0` 到 `23` 之间的一个整数，表示`小时`。如果忽略该值，则默认为 `0`。
+
+- **minute**
+
+  `0` 到 `59` 之间的一个整数，表示`分钟`。如果忽略该值，则默认为 `0`。
+
+- **second**
+
+  `0` 到 `59` 之间的一个整数，表示秒。如果忽略该值，则默认为 `0`。
+
+- **millisecond**
+
+  `0` 到 `999` 之间的一个整数，表示毫秒。如果忽略该值，则默认为`0`。
+
+### 注意事项
+
+- `Date.UTC()` 也会被**Date** 构造函数隐式调用
+
+```javascript
+new Date(2000, 0);
+// 等价于
+new Date(Date.UTC(2000, 0));
+```
+
+## Date.now
+
+`Date.now()` 表示执行时**日期和时间的毫秒数**。

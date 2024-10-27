@@ -96,6 +96,11 @@ const sidebars: SidebarsConfig = {
             "Javascript/scope/garbage-collection",
           ],
         },
+        {
+          type: "category",
+          label: "基本引用类型",
+          items: ["Javascript/basic-reference-types/date"],
+        },
       ],
     },
     {
