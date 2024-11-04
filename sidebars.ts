@@ -216,9 +216,7 @@ const sidebars: SidebarsConfig = {
       },
       items: [
         "React/introduce",
-        "React/jsx",
         "React/setState",
-        "React/controlled-uncontrolled",
         "React/higher-order-components",
         "React/pure-components",
       ],
