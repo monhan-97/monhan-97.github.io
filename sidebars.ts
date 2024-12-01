@@ -229,7 +229,7 @@ const sidebars: SidebarsConfig = {
         slug: "/setup",
         keywords: ["react"],
       },
-      items: ["learn-react-source/setup"],
+      items: ["learn-react-source/setup", "learn-react-source/jsx"],
     },
   ],
 };

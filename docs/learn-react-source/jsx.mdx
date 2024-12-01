@@ -1,0 +1,345 @@
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+# 实现 JSX
+
+:::info
+
+- 源码目录结构分析
+- 实现 JSX 方法`
+- 相关代码可在 [git tag v1.1](https://github.com/monhan-97/react/tree/1.1) 查看
+  :::
+
+## 源码目录结构
+
+`React`使用的是 [`Mono-repo`](./setup.mdx) 的结构管理各个包。
+
+源码主要包括如下部分:
+
+- **fixtures**: 测试用例
+- **packages**: 主要部分，包含 `scheduler`,`reconciler` 等。
+- **scripts**: `react` 构建相关。
+
+其中，主要的包在 `packages 目录下`，主要包含以下模块：
+
+- **react**: 核心 Api 所在，如 React.createElement、React.Component
+- **react-reconclier**: 协调器, 在 `render` 阶段用来构建 `fiber` 节点，和宿主环境无关
+- **scheduler**: 调度器相关
+- **react-server**: ssr 相关
+- **react-interactions**: 和事件如点击事件相关
+- 各种宿主环境的包:
+  - **react-dom: 浏览器环境**
+  - **react-native-renderer**:原生环境
+  - **react-art**: canvas & svg 渲染
+  - **react-noop-renderer**: 调试或 fiber 用
+- 辅助包:
+  - **shared**: 公用辅助方法，宿主环境无关
+  - **react-is** : 判断类型
+  - **react-client**: 流相关
+  - **react-fetch**: 数据请求相关
+  - **react-refresh**: 热加载相关
+
+## JSX 介绍
+
+在`React`中使用`JSX`语法描述用户界面。
+
+`JSX` 语法就是一种语法糖，是 一种 `JavaScript` 语法扩展，它允许开发者在 `JavaScript` 代码中直接编写类似 `HTML` 的代码，并在运行时将其转换为 React 元素。
+
+```mdx-code-block
+<Tabs>
+<TabItem value="JSX源代码" label="JSX源代码">
+```
+
+```javascript
+// JSX 源代码
+import React from "react";
+
+function App() {
+  return <h1>Hello World</h1>;
+}
+```
+
+```mdx-code-block
+</TabItem>
+<TabItem value="JSX转换结果" label="JSX转换结果">
+```
+
+```javascript
+// React 17之前，JSX 转换结果
+import React from "react";
+
+function App() {
+  return React.createElement("div", null, "Hello world!");
+}
+
+// React 17之后，JSX 转换结果
+import { jsx as _jsx } from "react/jsx-runtime";
+
+function App() {
+  return _jsx("div", { children: "Hello world!" });
+}
+```
+
+```mdx-code-block
+</TabItem>
+</Tabs>
+```
+
+`JSX` 转换的过程大致分为两步:
+
+- **编译时**：由 `Babel` 编译实现, `Babel` 会将 `JSX` 语法转换为标准的 `JavaScript` API;
+- **运行时**：由 `React` 实现,`jsx` 方法 和 `React.createElement` 方法;
+
+因此，我们只需要实现运行时的部分即可，即 `jsx` 方法和 `React.createElement` 方法。
+
+## 初始化 react
+
+先在`packages`目录, 新建 `react` 文件夹。执行 `yarn init`
+
+```bash
+cd packages/react
+
+yarn init
+```
+
+`package.json` 如下所示：
+
+```json title='package/react/package.json'
+{
+  "name": "react",
+  "version": "1.0.0",
+  "description": "React is a JavaScript library for building user interfaces.",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "exports": {
+    ".": {
+      "default": "./index.js"
+    },
+    "./package.json": "./package.json",
+    "./jsx-runtime": "./jsx-runtime.js",
+    "./jsx-dev-runtime": "./jsx-dev-runtime.js",
+    "./src/*": "./src/*"
+  },
+  "license": "ISC"
+}
+```
+
+## react 目录结构
+
+这里参考 `React` 官方的目录结构。基本目录如下所示：
+
+```
+react
+└── npm
+    └── index.js
+    └── jsx-dev-runtime.js
+    └── jsx-runtime.js
+└── src
+    └── jsx
+        └── ReactJSXElement.js
+    └── React.ts
+    └── ReactCurrentOwner.ts
+    └── ReactSharedInternals.ts
+└── index.js
+└── jsx-dev-runtime.js
+└── jsx-runtime.js
+└── package.json
+└── README.md
+```
+
+## 实现 JSX 方法
+
+- **$$typeof**: 这个字段可以用来标记是否是 React 元素。
+- **type**: 用来表示 React 元素或者组件的名称。
+
+```mdx-code-block
+<Tabs>
+<TabItem value="ReactJSXElement.js" label="ReactJSXElement.js">
+```
+
+```javascript title='packages/react/src/jsx/ReactJSXElement.js'
+import { REACT_ELEMENT_TYPE } from "shared/ReactSymbols";
+import ReactSharedInternals from "shared/ReactSharedInternals";
+
+const ReactCurrentOwner = ReactSharedInternals.ReactCurrentOwner;
+
+const RESERVED_PROPS = {
+  key: true,
+  ref: true,
+  __self: true,
+  __source: true,
+};
+
+function hasValidRef(config) {
+  return config.ref !== undefined;
+}
+
+function hasValidKey(config) {
+  return config.key !== undefined;
+}
+
+/**
+ * 创建新的 React 元素的工厂方法.
+ * 这个函数不再遵守类模式, 所以不要使用new来调用它。
+ * 另外，instanceof 检查不会工作.
+ * 根据 Symbol.for('react.element') 测试 $$typeof 字段来检查是否是 React 元素
+ *
+ * @param {*} type
+ * @param {*} props
+ * @param {*} key
+ * @param {string|object} ref
+ * @param {*} owner
+ * @param {*} self A *temporary* helper to detect places where `this` is
+ * different from the `owner` when React.createElement is called, so that we
+ * can warn. We want to get rid of owner and replace string `ref`s with arrow
+ * functions, and as long as `this` and owner are the same, there will be no
+ * change in behavior.
+ * @param {*} source An annotation object (added by a transpiler or otherwise)
+ * indicating filename, line number, and/or other information.
+ * @internal
+ */
+const ReactElement = function (type, key, ref, self, source, owner, props) {
+  const element = {
+    // This tag allows us to uniquely identify this as a React Element
+    $$typeof: REACT_ELEMENT_TYPE,
+
+    // 属于元素的内置属性
+    type: type,
+    key: key,
+    ref: ref,
+    props: props,
+
+    // 记录负责创建该元素的组件。
+    _owner: owner,
+  };
+
+  return element;
+};
+
+/**
+ * https://github.com/reactjs/rfcs/pull/107
+ * @param {*} type
+ * @param {object} props
+ * @param {string} key
+ */
+export function jsx(type, config, maybeKey) {
+  let propName;
+
+  // Reserved names are extracted
+  const props = {};
+
+  let key = null;
+  let ref = null;
+
+  // Currently, key can be spread in as a prop. This causes a potential
+  // issue if key is also explicitly declared (ie. <div {...props} key="Hi" />
+  // or <div key="Hi" {...props} /> ). We want to deprecate key spread,
+  // but as an intermediary step, we will use jsxDEV for everything except
+  // <div {...props} key="Hi" />, because we aren't currently able to tell if
+  // key is explicitly declared to be undefined or not.
+  if (maybeKey !== undefined) {
+    key = "" + maybeKey;
+  }
+
+  if (hasValidKey(config)) {
+    key = "" + config.key;
+  }
+
+  if (hasValidRef(config)) {
+    ref = config.ref;
+  }
+
+  // Remaining properties are added to a new props object
+  for (propName in config) {
+    if (
+      hasOwnProperty.call(config, propName) &&
+      !hasOwnProperty(RESERVED_PROPS, propName)
+    ) {
+      props[propName] = config[propName];
+    }
+  }
+
+  // Resolve default props
+  if (type && type.defaultProps) {
+    const defaultProps = type.defaultProps;
+    for (propName in defaultProps) {
+      if (props[propName] === undefined) {
+        props[propName] = defaultProps[propName];
+      }
+    }
+  }
+
+  return ReactElement(
+    type,
+    key,
+    ref,
+    undefined,
+    undefined,
+    ReactCurrentOwner.current,
+    props
+  );
+}
+```
+
+```mdx-code-block
+</TabItem>
+<TabItem value="jsx-runtime.js" label="jsx-runtime.js">
+```
+
+```javascript title='packages/react/jsx-runtime.js'
+export { jsx } from "./src/jsx/ReactJSXElement";
+```
+
+```mdx-code-block
+</TabItem>
+<TabItem value="jsx-dev-runtime.js" label="jsx-dev-runtime.js">
+```
+
+```javascript title='packages/react/jsx-dev-runtime.js'
+export { jsx } from "./src/jsx/ReactJSXElement";
+```
+
+```mdx-code-block
+</TabItem>
+</Tabs>
+```
+
+## 创建 share 目录
+
+我们先在`packages`目录, 新建 `shared` 文件夹。执行 `yarn init`
+
+```bash
+cd packages/shared
+
+yarn init
+```
+
+`shared` 包不需要入口文件，因为它里面的所有方法都会直接在其他包里面被引用，代码如下：
+
+```mdx-code-block
+<Tabs>
+<TabItem value="package.json" label="package.json">
+```
+
+```json title='packages/shared/package.json'
+{
+  "private": true,
+  "name": "shared",
+  "version": "0.0.0"
+}
+```
+
+```mdx-code-block
+</TabItem>
+<TabItem value="ReactSymbols.ts" label="ReactSymbols.ts">
+```
+
+```javascript title='packages/shared/ReactSymbols.ts'
+export const REACT_ELEMENT_TYPE = Symbol.for("react.element");
+```
+
+```mdx-code-block
+</TabItem>
+</Tabs>
+```
