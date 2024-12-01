@@ -221,6 +221,16 @@ const sidebars: SidebarsConfig = {
         "React/pure-components",
       ],
     },
+    {
+      type: "category",
+      label: "手写 React 源码",
+      link: {
+        type: "generated-index",
+        slug: "/setup",
+        keywords: ["react"],
+      },
+      items: ["learn-react-source/setup"],
+    },
   ],
 };
 
