@@ -233,6 +233,7 @@ const sidebars: SidebarsConfig = {
         "learn-react-source/setup",
         "learn-react-source/jsx",
         "learn-react-source/build",
+        "learn-react-source/fiber",
       ],
     },
   ],

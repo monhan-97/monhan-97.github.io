@@ -1,0 +1,97 @@
+# Fiber
+
+:::info
+
+- 实现 ReactDOM.render 函数
+- 介绍 Concurrent Mode
+- 介绍 Fiber
+  :::
+
+## 实现 render 函数
+
+接下来我们需要自己实现一个 `render` 函数，并将其插入到指定的容器中。
+
+目前，我们只关心向 DOM 添加内容。我们稍后会处理更新和删除。
+
+假设 `jsx` 转换结果如下:
+
+```javascript
+const element = {
+  type: "div",
+  props: {
+    style: "background: salmon",
+    children: [
+      {
+        type: "h1",
+        props: {
+          children: "Hello World",
+        },
+      },
+      {
+        type: "h2",
+        props: {
+          style: "text-align: right",
+          children: "from React",
+        },
+      },
+    ],
+  },
+};
+
+const render = (element, container) => {
+  const dom = document.createElement(element.type);
+
+  Object.keys(element.props).forEach((name) => {
+    if (name === "children" && typeof element.props[name] === "string") {
+      dom.innerText = element.props[name];
+    } else {
+      dom[name] = element.props[name];
+    }
+  });
+
+  if (Array.isArray(element.props.children)) {
+    element.props.children.forEach((child) => render(child, dom));
+  }
+
+  container.appendChild(dom);
+};
+
+render(element, document.getElementById("root"));
+```
+
+![jsx展现样式](./images/Snipaste_2024-12-25_01-04-23.png)
+
+## Concurrent Mode
+
+在开始添加更多代码之前,我们需要重构之前的 `render` 函数:
+
+- 因为一旦开始渲染，我们就不会停止，直到渲染出完整的元素树。
+- 如果元素树很大，可能会阻塞**主线程**太长时间。
+- 如果浏览器需要执行高优先级的操作，例如处理用户输入或保持动画流畅，则必须等到`render` 函数执行完成。
+
+所以,我们可以把工作分成小单元,完成每个单元后，如果还有其他需要完成的事情，我们将让浏览器中断渲染。
+
+我们这里使用 `requestIdleCallback` 来进行循环。它会在浏览器空闲的时候执行回调函数。
+
+`requestIdleCallback` 给回调函数提供了一个截止时间参数。我们可以用它来检测当前空闲时间以及回调是否在超时时间前已经执行的状态
+
+```javascript
+let nextUnitOfWork = null;
+
+function workLoop(deadline) {
+  let shouldYield = false;
+  while (nextUnitOfWork && !shouldYield) {
+    nextUnitOfWork = performUnitOfWork(nextUnitOfWork);
+    shouldYield = deadline.timeRemaining() < 1;
+  }
+  requestIdleCallback(workLoop);
+}
+
+requestIdleCallback(workLoop);
+
+function performUnitOfWork(nextUnitOfWork) {
+  // TODO
+}
+```
+
+## 介绍 Fiber
