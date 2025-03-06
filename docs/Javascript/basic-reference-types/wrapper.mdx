@@ -1,0 +1,69 @@
+# 原始值包装类型
+
+为了方便操作原始值, **ECMAScript** 提供了 3 种特殊的引用类型: **Boolean、Number、String**。
+
+原始值 (如字符串、数字、布尔值等) 本身并不是对象, 因此它们没有方法或属性。
+
+在原始值上调用方法或访问属性的时候, **ECMAScript** 会自动将原始值转换为对应的包装对象。
+
+## String 包装类型
+
+```javascript
+let s1 = "some text";
+let s2 = s1.substring(2);
+```
+
+在这段代码中,`s1` 是一个字符串原始值 但在调用 `substring()` 方法时, **ECMAScript** 会临时将其转换为 `String` 对象。代码相当于:
+
+```javascript
+let s1 = new String("some text");
+let s2 = s1.substring(2);
+s1 = null;
+```
+
+`引用类型` 和 `原始值包装类型` 的主要区别在于对象的`生命周期`。
+
+- 通过 `new` 实例化`引用类型`后, 得到的实例会在离开 `作用域` 时被销毁。
+- 而 自动创建的 `原始值包装对象` 则只存在于访问他的那行代码执行期间。这意味着不能在运行时给原始值添加属性和方法。
+
+```javascript
+let s1 = "some text";
+s1.color = "red";
+console.log(s1.color); //undefined
+```
+
+这里的第二行代码尝试给字符串`s1`添加了一个`color`属性, 第二行代码运行的时候会临时创建一个`String`对象。
+
+当第三行代码执行的时候,这个对象已经被销毁了。实际上,第三行代码在这里创建了自己的`String`对象。所以访问 `color` 属性的值等于 `undefined`。
+
+## Number 包装类型
+
+```javascript
+let num = 123.456;
+console.log(num.toFixed(2)); // "123.46"
+```
+
+这里, `num` 是一个数字原始值，但在调用 `toFixed()` 方法时, `JavaScript` 会临时将其转换为 `Number` 对象。
+
+## Boolean 包装类型
+
+```javascript
+let bool = true;
+console.log(bool.toString()); // "true"
+```
+
+这里, `bool` 是一个布尔原始值，但在调用 `toString()` 方法时, `JavaScript` 会临时将其转换为 `Boolean` 对象。
+
+## 手动创建包装对象
+
+虽然可以显示地使用 `Boolean、Number、String` 构造函数创建 **原始值包装对象**。
+
+但是手动创建的**包装对象**, 容易让开发者疑惑 。分不清它们到底是`原始值`还是`引用值`。
+
+```javascript
+let value = "25";
+let number = Number(value); // 转型函数
+console.log(typeof number); // "number"
+let obj = new Number(value); // 构造函数
+console.log(typeof obj); // "object"
+```

@@ -99,7 +99,10 @@ const sidebars: SidebarsConfig = {
         {
           type: "category",
           label: "基本引用类型",
-          items: ["Javascript/basic-reference-types/date"],
+          items: [
+            "Javascript/basic-reference-types/date",
+            "Javascript/basic-reference-types/wrapper",
+          ],
         },
       ],
     },
