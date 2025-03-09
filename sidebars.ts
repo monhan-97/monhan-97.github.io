@@ -104,6 +104,11 @@ const sidebars: SidebarsConfig = {
             "Javascript/basic-reference-types/wrapper",
           ],
         },
+        {
+          type: "category",
+          label: "集合引用类型",
+          items: ["Javascript/collection-reference-types/object"],
+        },
       ],
     },
     {
