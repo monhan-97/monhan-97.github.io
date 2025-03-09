@@ -18,34 +18,10 @@ const sidebars: SidebarsConfig = {
   tutorialSidebar: [
     {
       type: "category",
-      label: "Prettier",
-      link: {
-        type: "generated-index",
-        slug: "/",
-        keywords: ["prettier-config"],
-      },
-      items: [
-        "prettier/what-is-prettier",
-        "prettier/prettier-config",
-        "prettier/how-to-use-prettier",
-      ],
-    },
-    {
-      type: "category",
-      label: "Flex 布局",
-      link: {
-        type: "generated-index",
-        slug: "/flex-layout",
-        keywords: ["flex-layout"],
-      },
-      items: ["flex-layout/flex-concept", "flex-layout/flex-container"],
-    },
-    {
-      type: "category",
       label: "Javascript",
       link: {
         type: "generated-index",
-        slug: "/Javascript",
+        slug: "/",
         keywords: ["Javascript"],
       },
       items: [
