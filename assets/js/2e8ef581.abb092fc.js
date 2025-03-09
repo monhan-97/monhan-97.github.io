@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkhuangmh_blog=self.webpackChunkhuangmh_blog||[]).push([[1639],{40:a=>{a.exports=JSON.parse('{"categoryGeneratedIndex":{"title":"Javascript","keywords":["Javascript"],"slug":"/","permalink":"/docs/","sidebar":"tutorialSidebar","navigation":{"next":{"title":"HTML \u4e2d\u7684 JavaScript","permalink":"/docs/Javascript/script-tag"}}}}')}}]);
