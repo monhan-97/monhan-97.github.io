@@ -1,0 +1,232 @@
+# Array
+
+## 构造函数 构建数组
+
+- 通过`Array`构造函数
+
+```javascript
+let colors = new Array(); // []
+```
+
+- 确定数组中元素的数量
+
+```javascript
+let colors = new Array(20); // 创建一个初始 `length`为 `20` 的数组。
+```
+
+- 创建包含特定值的数组
+
+```javascript
+let names = new Array("Greg"); //['Greg']
+```
+
+- 可以省略 new 操作符
+
+```javascript
+let names = Array("Greg"); //['Greg']
+```
+
+## 数组字面量 构建数组
+
+```javascript
+let colors = ["red", "blue", "green"];
+let names = [];
+let values = [1, 2];
+```
+
+## Array.from
+
+### 参数
+
+`Array.from()` 可以通过以下方式来创建数组对象:
+
+- `可迭代对象`(例如 `Map` 和 `Set` 对象);
+- `类数组`对象(带有 `length` 属性和索引元素的对象);
+
+`Array.from()` 有一个可选的参数 `mapFn` :
+
+- 该参数允许你在创建数组时为每个元素执行一个函数，类似于 `map()`。
+- `mapFn` 仅接受两个参数 `(element、index)`。
+
+thisArg
+
+- 执行 `mapFn` 时用作 this 的值。
+
+### 从 字符串 构建数组
+
+```javascript
+Array.from("foo");
+//["f","o","o"]
+```
+
+### 从 Set 构建数组
+
+```javascript
+const set = new Set(["foo", "bar", "baz", "foo"]);
+Array.from(set);
+// [ "foo", "bar", "baz" ]
+```
+
+### 从 Map 构建数组
+
+```javascript
+const map = new Map([
+  ["1", "a"],
+  ["2", "b"],
+  ["3", "c"],
+]);
+
+Array.from(map);
+//  [["1", "a"],["2", "b"],["3", "c"]],
+
+Array.from(map.keys());
+//  ["1","2","3"]
+
+Array.from(map.values());
+//  ["a","b","c"]
+```
+
+### 从 NodeList 构建数组
+
+根据 `DOM 元素` 的 `属性` 创建一个数组
+
+```javascript
+const images = document.querySelectorAll("img");
+const sources = Array.from(images, (image) => image.src);
+const insecureSources = sources.filter((link) => link.startsWith("http://"));
+```
+
+### 从类数组对象构建数组(arguments)
+
+```javascript
+function f() {
+  return Array.from(arguments);
+}
+
+f(1, 2, 3); // [1,2,3]
+```
+
+### 使用箭头函数和 Array.from()
+
+```javascript
+// 使用箭头函数作为映射函数去操作多个元素
+Array.from([1, 2, 3], (x) => x + x);
+// [2, 4, 6]
+
+// 生成一个数字序列。因为数组在每个位置都使用 `undefined` 初始化，下面的 `v` 值将是 `undefined`
+Array.from({ length: 5 }, (v, i) => i);
+// [0, 1, 2, 3, 4]
+```
+
+## Array.of
+
+可以把一组参数转换为数组。
+
+```javascript
+Array.of(1, 2, 3, 4, 5); //[1,2,3,4,5]
+Array.of(undefined); //[undefined]
+```
+
+## 数组空位
+
+使用数组字面量**初始化数组**时,可以使用一串逗号来**创建空位**。
+
+`ECMAScript`会将逗号之前相应索引位置的值当成**空位**。
+
+```javascript
+const options = [, , , , ,]; // 创建包含5个元素的数组
+console.log(options.length); // 5
+```
+
+ES6 新增的**方法**和**迭代器**普遍把这些空位当成存在的元素,只不过值为 `undefined`。
+
+```javascript
+const options = [1, , , , 5];
+
+for (const element of options) {
+  console.log(element === undefined);
+}
+// false true true true false
+
+Array.from(options); // [1, , , , 5];
+```
+
+ES6 之前**方法**则会忽略这个空位。
+
+```javascript
+const options = [1, , , , 5];
+
+// map会跳过空位置
+console.log(options.map((item) => 6)); // [6,undefined,undefined,undefined,6]
+
+//join()视空位置为空字符串
+console.log(options.join("-")); // "1----5"
+```
+
+## 数组索引
+
+要获取或设置数组里面的值,需要使用中括号提供相应值的数字索引。
+
+- 如果索引小于数组包含的元素长度 则返回对应的值
+
+```javascript
+let colors = ["red", "blue", "green"];
+console.log(colors[0]); // 获取第一项的值
+```
+
+- 如果索引大于数组包含的元素长度 则数组长度会自动扩展该**索引加 1**。
+
+```javascript
+let colors = ["red", "blue", "green"];
+colors[4] = "brown";
+console.log(colors); // ['red','blue','black',,'brown']
+```
+
+- 数组的 `length` 长度不是只读的, 通过修改 `length` 可以 从数组末尾**删除**或者**添加元素**
+
+```javascript
+let colors = ["red", "blue", "green"];
+colors.length = 2;
+console.log(colors); // ['red','blue']
+```
+
+```javascript
+let colors = ["red", "blue", "green"];
+colors.length = 6;
+console.log(colors); // ["red", "blue", "green",,,]
+```
+
+## 检测数组
+
+### instanceof
+
+```javascript
+let value = [];
+if (value instanceof Array) {
+  // doSomething
+}
+```
+
+- 如果只有一个网页(只有一个全局作用域)的情况下 , 使用 `instanceof` 操作符足矣。
+- 如果网页里面嵌套多个 `iframe`, 可能会涉及到多个不同的`全局执行上下文`。
+
+```javascript
+const iframe = document.createElement("iframe");
+document.body.appendChild(iframe);
+const iframeArray = iframe.contentWindow.Array;
+
+const arr = new iframeArray();
+console.log(arr instanceof Array); // false
+```
+
+### Array.isArray
+
+```javascript
+let value = [];
+if (Array.isArray(value)) {
+  // doSomething
+}
+```
+
+- 可以解决 `instanceof` 全局执行上下文 不同的问题。
+- 这个方法的目的, 就是确定一个值是否为数组。不管它是在那个`全局上下文`中创建的。

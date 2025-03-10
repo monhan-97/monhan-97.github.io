@@ -83,7 +83,10 @@ const sidebars: SidebarsConfig = {
         {
           type: "category",
           label: "集合引用类型",
-          items: ["Javascript/collection-reference-types/object"],
+          items: [
+            "Javascript/collection-reference-types/object",
+            "Javascript/collection-reference-types/array",
+          ],
         },
       ],
     },
