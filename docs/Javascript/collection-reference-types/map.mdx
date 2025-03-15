@@ -1,0 +1,187 @@
+# Map
+
+`Map` 是一种新的集合类型,可以用来存储 **键值对**, 并且能够记住键的**原始插入顺序**。
+
+`Map` 中的 **一个键只能出现一次**; 它在 `Map` 的集合中是独一无二的。
+
+## 初始化
+
+如果想在创建的时候**初始化实例** , 可以给 `Map` 构造函数 传入一个**可迭代对象**。
+
+```javascript
+const map = new Map();
+```
+
+### 嵌套数组
+
+```javascript
+const map = new Map([
+  [1, "one"],
+  [2, "two"],
+  [3, "three"],
+]);
+
+console.log(map.get(1)); //one
+```
+
+### 复制 Maps
+
+```javascript
+const original = new Map([[1, "one"]]);
+
+const clone = new Map(original);
+
+console.log(clone.get(1)); // one
+console.log(original === clone); // false 因为是不同对象的引用
+```
+
+### 合并 Maps
+
+```javascript
+const first = new Map([
+  [1, "one"],
+  [2, "two"],
+  [3, "three"],
+]);
+
+const second = new Map([
+  [1, "uno"],
+  [2, "dos"],
+]);
+
+// 合并两个 Map 对象时，如果有重复的键值，则后面的会覆盖前面的。
+// 展开语法本质上是将 Map 对象转换成数组。
+const merged = new Map([...first, ...second]);
+
+console.log(merged.get(1)); // uno
+console.log(merged.get(2)); // dos
+```
+
+## 基本 API
+
+可以使用 `set()` 在添加 **键值对**。 `set()` 方法返回 `Map` 实例, 因此 可以把 多个操作 **连接** 起来。
+
+可以使用 `get()`和 `has()` 进行查询。可以通过 `size` 属性获取 `Map`中**键值对**的数量。
+
+可以使用 `delete()`和 `clear()` 删除值。
+
+```javascript
+const map = new Map();
+
+console.log(map.has("firstName")); // false
+console.log(map.get("firstName")); // undefined
+console.log(map.size); // 0
+
+map.set("firstName", "Matt").set("lastName", "Frisbie");
+
+console.log(map.has("firstName")); // true
+console.log(map.get("firstName")); // Matt
+console.log(map.size); // 2
+
+map.delete("firstName");
+
+console.log(map.has("firstName")); // false
+console.log(map.has("lastName")); // Frisbie
+console.log(map.size); // 1
+
+map.clear();
+
+console.log(map.has("firstName")); // false
+console.log(map.has("lastName")); // Frisfalsebie
+console.log(map.size); // 0
+```
+
+`Map` 可以使用任何 **Javascript** 数据类型 作为 **键**。
+
+基本上相当于使用 **严格对象相等** 的标准检查 **键** 的匹配性。
+
+```javascript
+const map = new Map();
+
+const functionKey = () => {};
+const symbolKey = Symbol();
+const objectKey = {};
+
+map.set(functionKey, "functionValue");
+map.set(symbolKey, "symbolValue");
+map.set(objectKey, "objectValue");
+
+console.log(map.get(functionKey)); // functionValue
+console.log(map.get(symbolKey)); // symbolValue
+console.log(map.get(objectKey)); // objectValue
+```
+
+## 顺序与迭代
+
+`Map` 实例会维护 **键值对** 的插入顺序, 因此可以根据 **插入顺序** 执行迭代操作。
+
+```javascript
+const map = new Map([
+  ["key1", "value1"],
+  ["key2", "value2"],
+  ["key3", "value3"],
+]);
+
+for (const [key, value] of map.entries()) {
+  console.log(key, value);
+}
+```
+
+因为 `entries()` 是默认迭代器, 所以可以直接对 `Map` 进行扩展操作。把映射转换成数组:
+
+```javascript
+const map = new Map([
+  ["key1", "value1"],
+  ["key2", "value2"],
+  ["key3", "value3"],
+]);
+
+console.log([...map]); // [["key1", "value1"],["key2", "value2"],["key3", "value3"]]
+```
+
+可以调用`Map`实例的`forEach()`方法,一次迭代每个**键值对**。
+
+```javascript
+const map = new Map([
+  ["key1", "value1"],
+  ["key2", "value2"],
+  ["key3", "value3"],
+]);
+
+map.forEach((key, value) => {
+  console.log(key, value);
+});
+
+// key1  value1
+// key2  value2
+// key3  value3
+```
+
+`keys()`和`values()`分别返回插入顺序生成`键`和`值`的迭代器
+
+```javascript
+const map = new Map([
+  ["key1", "value1"],
+  ["key2", "value2"],
+  ["key3", "value3"],
+]);
+
+console.log(Array.from(map.keys())); // ['key1','key2','key3']
+console.log(Array.from(map.values())); // ['value1','value2','value3']
+```
+
+## Map 和 Object 的区别
+
+### 内存占用
+
+`Map` 大约可以比 `Object` 多存储 **50%** 的 **键值对**。
+
+### 插入性能
+
+涉及到 **大量** 插入操作 `Map`的性能会比`Object`更好一点。
+
+### 删除性能
+
+使用 `delete` 关键字删除属性的性能一直饱受诟病。所以出现了一些把属性值设置为 `null` 和 `undefined`。
+
+涉及到 **大量** 删除操作 `Map` , `Map` 的性能会比 `Object` 更好一点。

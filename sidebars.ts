@@ -86,6 +86,7 @@ const sidebars: SidebarsConfig = {
           items: [
             "Javascript/collection-reference-types/object",
             "Javascript/collection-reference-types/array",
+            "Javascript/collection-reference-types/map",
           ],
         },
       ],
