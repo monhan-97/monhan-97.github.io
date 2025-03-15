@@ -1,0 +1,398 @@
+# Array
+
+## 构造函数 构建数组
+
+- 通过`Array`构造函数
+
+```javascript
+let colors = new Array(); // []
+```
+
+- 确定数组中元素的数量
+
+```javascript
+let colors = new Array(20); // 创建一个初始 `length`为 `20` 的数组。
+```
+
+- 创建包含特定值的数组
+
+```javascript
+let names = new Array("Greg"); //['Greg']
+```
+
+- 可以省略 new 操作符
+
+```javascript
+let names = Array("Greg"); //['Greg']
+```
+
+## 数组字面量 构建数组
+
+```javascript
+let colors = ["red", "blue", "green"];
+let names = [];
+let values = [1, 2];
+```
+
+## Array.from
+
+### 参数
+
+`Array.from()` 可以通过以下方式来创建数组对象:
+
+- `可迭代对象`(例如 `Map` 和 `Set` 对象);
+- `类数组`对象(带有 `length` 属性和索引元素的对象);
+
+`Array.from()` 有一个可选的参数 `mapFn` :
+
+- 该参数允许你在创建数组时为每个元素执行一个函数，类似于 `map()`。
+- `mapFn` 仅接受两个参数 `(element、index)`。
+
+thisArg
+
+- 执行 `mapFn` 时用作 this 的值。
+
+### 从 字符串 构建数组
+
+```javascript
+Array.from("foo");
+//["f","o","o"]
+```
+
+### 从 Set 构建数组
+
+```javascript
+const set = new Set(["foo", "bar", "baz", "foo"]);
+Array.from(set);
+// [ "foo", "bar", "baz" ]
+```
+
+### 从 Map 构建数组
+
+```javascript
+const map = new Map([
+  ["1", "a"],
+  ["2", "b"],
+  ["3", "c"],
+]);
+
+Array.from(map);
+//  [["1", "a"],["2", "b"],["3", "c"]],
+
+Array.from(map.keys());
+//  ["1","2","3"]
+
+Array.from(map.values());
+//  ["a","b","c"]
+```
+
+### 从 NodeList 构建数组
+
+根据 `DOM 元素` 的 `属性` 创建一个数组
+
+```javascript
+const images = document.querySelectorAll("img");
+const sources = Array.from(images, (image) => image.src);
+const insecureSources = sources.filter((link) => link.startsWith("http://"));
+```
+
+### 从类数组对象构建数组(arguments)
+
+```javascript
+function f() {
+  return Array.from(arguments);
+}
+
+f(1, 2, 3); // [1,2,3]
+```
+
+### 使用箭头函数和 Array.from()
+
+```javascript
+// 使用箭头函数作为映射函数去操作多个元素
+Array.from([1, 2, 3], (x) => x + x);
+// [2, 4, 6]
+
+// 生成一个数字序列。因为数组在每个位置都使用 `undefined` 初始化，下面的 `v` 值将是 `undefined`
+Array.from({ length: 5 }, (v, i) => i);
+// [0, 1, 2, 3, 4]
+```
+
+## Array.of
+
+可以把一组参数转换为数组。
+
+```javascript
+Array.of(1, 2, 3, 4, 5); //[1,2,3,4,5]
+Array.of(undefined); //[undefined]
+```
+
+## 数组空位
+
+使用数组字面量**初始化数组**时,可以使用一串逗号来**创建空位**。
+
+`ECMAScript`会将逗号之前相应索引位置的值当成**空位**。
+
+```javascript
+const options = [, , , , ,]; // 创建包含5个元素的数组
+console.log(options.length); // 5
+```
+
+ES6 新增的**方法**和**迭代器**普遍把这些空位当成存在的元素,只不过值为 `undefined`。
+
+```javascript
+const options = [1, , , , 5];
+
+for (const element of options) {
+  console.log(element === undefined);
+}
+// false true true true false
+
+Array.from(options); // [1, , , , 5];
+```
+
+ES6 之前**方法**则会忽略这个空位。
+
+```javascript
+const options = [1, , , , 5];
+
+// map会跳过空位置
+console.log(options.map((item) => 6)); // [6,undefined,undefined,undefined,6]
+
+//join()视空位置为空字符串
+console.log(options.join("-")); // "1----5"
+```
+
+## 数组索引
+
+要获取或设置数组里面的值,需要使用中括号提供相应值的数字索引。
+
+- 如果索引小于数组包含的元素长度 则返回对应的值
+
+```javascript
+let colors = ["red", "blue", "green"];
+console.log(colors[0]); // 获取第一项的值
+```
+
+- 如果索引大于数组包含的元素长度 则数组长度会自动扩展该**索引加 1**。
+
+```javascript
+let colors = ["red", "blue", "green"];
+colors[4] = "brown";
+console.log(colors); // ['red','blue','black',,'brown']
+```
+
+- 数组的 `length` 长度不是只读的, 通过修改 `length` 可以 从数组末尾**删除**或者**添加元素**
+
+```javascript
+let colors = ["red", "blue", "green"];
+colors.length = 2;
+console.log(colors); // ['red','blue']
+```
+
+```javascript
+let colors = ["red", "blue", "green"];
+colors.length = 6;
+console.log(colors); // ["red", "blue", "green",,,]
+```
+
+## 检测数组
+
+### instanceof
+
+```javascript
+let value = [];
+if (value instanceof Array) {
+  // doSomething
+}
+```
+
+- 如果只有一个网页(只有一个全局作用域)的情况下 , 使用 `instanceof` 操作符足矣。
+- 如果网页里面嵌套多个 `iframe`, 可能会涉及到多个不同的`全局执行上下文`。
+
+```javascript
+const iframe = document.createElement("iframe");
+document.body.appendChild(iframe);
+const iframeArray = iframe.contentWindow.Array;
+
+const arr = new iframeArray();
+console.log(arr instanceof Array); // false
+```
+
+### Array.isArray
+
+```javascript
+let value = [];
+if (Array.isArray(value)) {
+  // doSomething
+}
+```
+
+- 可以解决 `instanceof` 全局执行上下文 不同的问题。
+- 这个方法的目的, 就是确定一个值是否为数组。不管它是在那个`全局上下文`中创建的。
+
+## 迭代器方法
+
+ES6 中, `Array` 的原型上 暴露了三个用于检索`数组内容`的方法。
+
+### keys
+
+返回`数组索引`的迭代器
+
+```javascript
+const a = ["foo", "bar", "baz", "qux"];
+a.keys(); // [0,1,2,3]
+```
+
+### values
+
+返回`数组元素`的迭代器
+
+```javascript
+const a = ["foo", "bar", "baz", "qux"];
+a.values(); // ["foo", "bar", "baz", "qux"]
+```
+
+### entries
+
+返回`索引/值对`的迭代器
+
+```javascript
+const a = ["foo", "bar", "baz", "qux"];
+a.entries(); // [[0,'foo'],[1,'bar'],[2,'baz'],[3,'qux']]
+```
+
+## 复制和填充方法
+
+ES6 新增了两个方法 批量复制方法 `copyWithin` 以及填充数组方法 `fill`。
+
+这两个方法 `函数签名` 类似 都需要指定既有数组实例上的一个范围 **包含开始索引**。**不包含结束索引**。
+
+### fill
+
+用一个 **固定值** 填充一个数组中从 **起始索引(默认为 0)** 到 **终止索引(默认为 array.length)** 内的全部元素
+
+**负值索引** 从数组末尾开始计数: `负索引 = 负值索引+数组的长度`
+
+```javascript
+const zeroes = [0, 0, 0, 0, 0];
+
+zeroes.fill(5); // [5, 5, 5, 5, 5];
+zeroes.fill(0); // [0, 0, 0, 0, 0];
+
+zeroes.fill(6, 3); // [0, 0, 0, 6, 6];
+zeroes.fill(0); // [0, 0, 0, 0, 0];
+
+zeroes.fill(7, 1, 3); // [0, 7, 7, 0, 0];
+zeroes.fill(0); // [0, 0, 0, 0, 0];
+
+zeroes.fill(8, -4, -1); // [0, 8, 8, 8, 0];
+```
+
+### copyWithIn
+
+**浅复制**数组中的部分内容 然后将它们插入到**指定索引**开始的位置
+
+**负值索引** 从数组末尾开始计数: `负索引 = 负值索引+数组的长度`
+
+```javascript
+let ints;
+let reset = () => {
+  ints = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+};
+reset();
+
+ints.copyWithin(5); // [0, 1, 2, 3, 4, 0, 1, 2, 3, 4];
+reset();
+
+ints.copyWithin(0, 5); // [5, 6, 7, 8, 9, 5, 6, 7, 8, 9];
+reset();
+
+ints.copyWithin(4, 0, 3); // [0, 1, 2, 3, 0, 1, 2, 7, 8, 9];
+reset();
+
+// ints.copyWithin(6, 3, 7);
+ints.copyWithin(-4, -7, -3); // [0, 1, 2, 3, 4, 5, 3, 4, 5, 6];
+```
+
+## 栈方法
+
+`ECMAScript` 给数组提供了 `push` 和 `pop` 方法。让数组对象可以实现 `栈`的行为.
+
+`栈` 是一种 **后进先出(LIFO,Last-In-First-Out)** 的数据结构。 也就是最新添加的项先被删除。
+
+数据项的插入(成为**推入 push**) 和删除 (成为**弹出,pop**) 只在一个地方发生。
+
+`push()`方法接收任意数量的参数, 并将它们添加到数组末尾 返回数组的最新长度。
+
+`pop()`方法用于删除数组最后一项, 减少数组的长度, 返回被删除的项。
+
+```javascript
+let colors = [];
+let count = colors.push("red", "green"); // 2;
+
+count = colors.push("black"); // 3
+
+let item = colors.pop(); // ’black‘
+```
+
+## 队列方法
+
+`ECMAScript` 给数组提供了 `push` 和 `shift` 方法。让数组对象可以实现 `队列` 的行为.
+
+`队列` 是一种 **先进先出(FIFO,First-In-First-Out)** 的数据结构。 列表开头的数据先被删除。
+
+`push()`方法接收任意数量的参数, 并将它们添加到数组末尾 返回数组的最新长度。
+
+`shift()`方法用于删除数组第一项, 减少数组的长度, 返回被删除的项。
+
+```javascript
+let colors = [];
+let count = colors.push("red", "green"); // 2;
+
+count = colors.push("black"); // 3
+
+let item = colors.shift(); // "red"
+```
+
+`ECMAScript` 为数组提供了 `unshift()` 方法。
+
+`unshift()` 方法执行跟 `shift()` 相反的操作：
+
+- 在数组开头添加任意多个值, 返回新的数组长度。
+
+- 可以使用`unshift()` 和 `pop()` 可以在相反方向上模拟队列
+
+## 排序方法
+
+`sort()` 方法 **就地** 对数组的元素进行排序，并返回对**相同数组的引用**。
+
+`sort()` 方法 **默认排序** 会按照按 **升序重新排列** 数组元素, 然后将数组每一项上转换为**字符串**。然后按比较字符串来决定顺序。即使元素都是数值类型, 也会把数组转换为字符串在比较.
+
+```javascript
+let values = [0, 1, 5, 10, 15];
+values.sort(); // [0, 1, 10, 15, 5]
+```
+
+很明显，正在多数情况下都不是最合适的。所以`sort()`可以接受一个 **比较函数** 用于判断哪个值应该排在前面:
+
+- 比较函数接受两个参数 如果**第一个参数应该排在第二个参数前面**, 就返回**负值**。
+- 如果**第一个参数应该排在第二个参数**后面,就返回**正值**。
+- 如果**两个参数相等**,就返回 **0**。
+
+```javascript
+//升序
+const compareAsc = (a, b) => {
+  return a - b;
+};
+
+//降序
+const compareDesc = (a, b) => {
+  return b - a;
+};
+
+let values = [0, 1, 5, 10, 15];
+
+values.sort(compareAsc); // [0, 1, 5, 10, 15]
+values.sort(compareDesc); // [15, 10, 5, 1, 0]
+```

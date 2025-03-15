@@ -326,7 +326,7 @@ class ReconnectingWebSocket {
     }
   };
 
-  private heartbeat() {
+  private startHeartbeat() {
     const { heartbeat = {} } = this.options;
     if (heartbeat.delay && heartbeat.message) {
       this.heartbeatInterval = window.setInterval(() => {
@@ -464,7 +464,7 @@ class ReconnectingWebSocket {
       defaultOptions.minUptime
     );
 
-    this.heartbeat();
+    this.startHeartbeat();
 
     this.resetHeartbeat();
 
