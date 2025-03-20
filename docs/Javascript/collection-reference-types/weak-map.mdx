@@ -1,0 +1,138 @@
+# WeakMap
+
+`WeakMap` 是可被 **垃圾回收** 的值的集合,`WeakMap` 允许将数据与对象相关联。
+
+`WeakMap`其中的 **键** 必须是 **对象** 和 **非全局注册的符号**, 值可以使用任意的**Javascript** 数据类型。
+
+## 初始化
+
+可以给 `WeakMap` 构造函数 传入一个 **Array** 或者 **可迭代对象**。
+
+```javascript
+const key1 = { id: 1 };
+const key2 = { id: 2 };
+const key3 = { id: 3 };
+
+const weakMap = new WeakMap();
+
+weakMap.set(key1, "value1").set(key2, "value2").set(key3, "value3");
+
+console.log(weakMap.get(key1));
+console.log(weakMap.get(key2));
+console.log(weakMap.get(key3));
+```
+
+如果尝试使用 非对象设置 **键**, 会抛出 **TypeError**。
+
+```javascript
+const weakMap = new WeakMap();
+
+weakMap.set("key1", "value1");
+// Uncaught TypeError: Invalid value used as weak map key
+```
+
+## 基本 API
+
+可以使用 `set()` 在添加 键值对。 `set()` 方法返回 `WeakMap` 实例, 因此 可以把 多个操作 连接 起来。
+
+可以使用 `get()` 和 `has()` 进行查询。可以通过 `size` 属性获取 `WeakMap` 中键值对的数量。
+
+可以使用 `delete()` 和 `clear()` 删除值。
+
+```javascript
+const key1 = { id: 1 };
+const key2 = { id: 2 };
+
+const weakMap = new WeakMap();
+
+console.log(weakMap.has(key1)); // false
+console.log(weakMap.get(key2)); // undefined
+
+weakMap.set(key1, "Matt");
+weakMap.set(key2, "Frisbie");
+
+console.log(weakMap.has(key1)); // true
+console.log(weakMap.get(key2)); // Matt
+
+weakMap.delete(key1);
+
+console.log(weakMap.has(key1)); // false
+console.log(weakMap.has(key2)); // true
+```
+
+## 弱键
+
+一个对象作为 `WeakMap` 的 **键** 存在 , 不会阻止垃圾回收。
+
+如果一个对象作为 **键** 被回收, 那么在 `WeakMap` 中相应的值便成为了进行 **垃圾回收** 的候选对象。
+
+`set` 方法() 初始化了一个新对象 , 并将它作用一个字符串的键。
+
+因为没有指向这个对象的其他引用 , 所以当这段代码执行后 , 这个对象 **键** 就会被当作垃圾回收。
+
+然后 这个**键值对** 就从 `WeakMap`中消失了。
+
+```javascript
+const weakMap = new WeakMap();
+
+weakMap.set({}, "value");
+```
+
+`container` 对象维护着一个 **键** 的引用, 因此这个对象**键** 不会成为垃圾回收的目标。
+
+但是如果**调用**了`removeReference()`, 就会摧毁对象的最后一个引用, 垃圾回收就会把这个**键值对**清理掉。
+
+```javascript
+const weakMap = new WeakMap();
+
+const container = {
+  key: {},
+};
+
+weakMap.set(container.key, "value");
+
+function removeReference() {
+  container.key = null;
+}
+```
+
+## 不可迭代
+
+因为 `WeakMap` 中的 **键** 任何时候都有可能会被销毁，所以没有必要提供迭代**键值对**的能力。
+
+## 使用 `WeakMap`
+
+### 私有数据存储
+
+```javascript
+const privateData = new WeakMap();
+
+class MyClass {
+  constructor() {
+    privateData.set(this, { secret: 42 });
+  }
+
+  getSecret() {
+    return privateData.get(this).secret;
+  }
+}
+
+const instance = new MyClass();
+
+console.log(instance.getSecret()); // 42
+```
+
+### DOM 节点关联数据
+
+```javascript
+const nodeData = new WeakMap();
+
+const node = document.getElementById("__docusaurus");
+nodeData.set(node, 0);
+
+node.addEventListener("click", () => {
+  let clicks = nodeData.get(node);
+  nodeData.set(node, ++clicks);
+  console.log(`Clicked ${clicks} times`);
+});
+```

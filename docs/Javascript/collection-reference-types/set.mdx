@@ -1,0 +1,117 @@
+# Set
+
+`Set` 是一种新的集合类型, 允许你存储任何类型（无论是原始值还是对象引用）的唯一值。
+
+## 初始化
+
+如果想在创建的时候**初始化实例** , 可以给 `Set` 构造函数 传入一个 **Array** 或者**可迭代对象**。
+
+```javascript
+const set = new Set(["value1", "value2", "value3"]);
+
+console.log(set.size); // 3
+```
+
+### 复制 Set
+
+```javascript
+const original = new Set(["value1", "value2"]);
+
+const clone = new Set(original);
+
+console.log(original === clone); // false 因为是不同对象的引用
+```
+
+### 合并 Set
+
+```javascript
+const first = new Set(["one", "two", "three"]);
+
+const second = new Set(["uno", "dos"]);
+
+const merged = new Set([...first, ...second]);
+console.log(merged.has("one")); //true
+console.log(merged.has("uno")); //uno
+```
+
+## 基本 API
+
+可以使用 `add()` 在增加 **值** 。 `add()` 方法返回 `Set` 实例, 因此 可以把 多个操作 连接 起来。
+
+可以使用 `get()` 和 `has()` 进行查询。可以通过 `size` 属性获取 `Set` 中元素的数量。
+
+可以使用 `delete()` 和 `clear()` 删除 **值**。
+
+```javascript
+const set = new Set();
+
+console.log(set.has("Matt")); // false
+console.log(set.size); // 0
+
+set.add("Matt");
+set.add("Frisbie");
+
+console.log(set.has("Matt")); // true
+console.log(set.size); // 2
+
+set.delete("Matt");
+
+console.log(set.has("Matt")); // false
+console.log(set.has("Frisbie")); // true
+console.log(set.size); // 1
+
+set.clear();
+console.log(set.has("Matt")); // false
+console.log(set.has("Frisbie")); // false
+console.log(set.size); // 0
+```
+
+`Set` 可以使用 **任何 Javascript 数据类型** 作为值。
+
+基本上相当于使用 **严格对象相等** 的标准检查 **值** 的匹配性。
+
+```javascript
+const map = new Set();
+
+const functionKey = () => {};
+const symbolKey = Symbol();
+const objectKey = {};
+
+map.add(functionKey);
+map.set(symbolKey);
+map.set(objectKey);
+
+console.log(map.has(functionKey)); // true
+console.log(map.has(symbolKey)); // true
+console.log(map.has(objectKey)); // true
+```
+
+## 顺序与迭代
+
+`Set` 实例会维护 **值** 的 **插入顺序**, 因此可以根据 **插入顺序** 执行迭代操作。
+
+```javascript
+const set = new Set(["value1", "value2", "value3"]);
+
+for (let value of set.values()) {
+  console.log(value);
+}
+```
+
+`values()` 是默认迭代器, 因为 `set.values` 全等 `set[Symbol.iterator]` 所以可以直接对 `Set` 进行扩展操作。
+
+```javascript
+const set = new Set(["value1", "value2", "value3"]);
+
+console.log([...set]); //["value1", "value2", "value3"] ;
+```
+
+可以调用 `Set` 实例 的 `forEach()` 方法,一次迭代每个 **值**。
+
+```javascript
+const set = new Set(["value1", "value2", "value3"]);
+
+set.forEach((item) => {
+  console.log(item);
+});
+```

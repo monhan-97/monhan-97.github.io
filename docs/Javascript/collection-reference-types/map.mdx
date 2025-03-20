@@ -6,7 +6,7 @@
 
 ## 初始化
 
-如果想在创建的时候**初始化实例** , 可以给 `Map` 构造函数 传入一个**可迭代对象**。
+如果想在创建的时候**初始化实例** , 可以给 `Map` 构造函数 传入一个 **Array** 或者**可迭代对象**。
 
 ```javascript
 const map = new Map();
@@ -127,7 +127,9 @@ for (const [key, value] of map.entries()) {
 }
 ```
 
-因为 `entries()` 是默认迭代器, 所以可以直接对 `Map` 进行扩展操作。把映射转换成数组:
+`entries()` 是默认迭代器, 因为`map.entries` 全等 `map[Symbol.iterator]` 所以可以直接对 `Map` 进行扩展操作。
+
+把 `Map` 转换成数组:
 
 ```javascript
 const map = new Map([
@@ -148,13 +150,13 @@ const map = new Map([
   ["key3", "value3"],
 ]);
 
-map.forEach((key, value) => {
-  console.log(key, value);
+map.forEach((value, key) => {
+  console.log(value, key);
 });
 
-// key1  value1
-// key2  value2
-// key3  value3
+// value1  key1
+// value2  key2
+// value3  key3
 ```
 
 `keys()`和`values()`分别返回插入顺序生成`键`和`值`的迭代器

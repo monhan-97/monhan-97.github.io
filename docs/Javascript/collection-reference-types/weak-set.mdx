@@ -1,0 +1,80 @@
+# WeakSet
+
+`WeakSet` 是可被 **垃圾回收** 的值的集合, 其中的 **值** 必须是 **对象** 和 **非全局注册的符号**。并且**值**只能出现一次。
+
+## 初始化
+
+```javascript
+const val1 = { id: 1 };
+const val2 = { id: 2 };
+const val3 = { id: 3 };
+
+const weakset = new WeakSet([val1, val2, val3]);
+
+console.log(weakset.has(val1)); // true
+console.log(weakset.has(val2)); // true
+console.log(weakset.has(val3)); // true
+```
+
+如果尝试使用添加 非对象设置 **值**, 会抛出 **TypeError**。
+
+```javascript
+const weakset = new WeakSet();
+
+weakset.add("value1"); // Uncaught TypeError: Invalid value used as weak set key
+```
+
+## 基本 API
+
+可以使用 `add()` 在添加 **值**, `add()` 方法返回 `WeakSet` 实例, 因此 可以把 多个操作 连接 起来。
+
+可以使用 `has()` 进行查询。可以通过 `size` 属性获取 `WeakSet` 中 **值** 的数量。
+
+可以使用 `delete()` 和 `clear()` 删除值。
+
+```javascript
+const weakset = new WeakSet();
+
+const val1 = { id: 1 };
+const val2 = { id: 2 };
+
+console.log(weakset.has(val1)); // false
+
+weakset.add(val1).add(val2);
+
+console.log(weakset.has(val1)); // true
+console.log(weakset.has(val2)); // true
+
+console.log(weakset.delete(val1));
+
+console.log(weakset.has(val1)); // false
+console.log(weakset.has(val2)); // true
+```
+
+## 弱值
+
+一个对象作为 `WeakSet` 的 **值** 存在 , 不会阻止垃圾回收。
+
+如果一个对象作为 **值** 被回收, 那么在 `WeakSet` 中相应的 **值** 便成为了进行 **垃圾回收** 的候选对象。
+
+`container` 对象维护着一个 **值** 的引用, 因此这个对象 **值** 不会成为**垃圾回收**的目标。
+
+但是如果调用了 `removeReference()`, 就会摧毁对象的最后一个引用, 垃圾回收就会把这个键值对清理掉。
+
+```javascript
+const weakset = new WeakSet();
+
+const container = {
+  key: {},
+};
+
+weakset.add(container.key);
+
+function removeReference() {
+  container.key = null;
+}
+```
+
+## 不可迭代
+
+因为 `WeakSet` 中的 **值** 任何时候都有可能会被 **垃圾回收** ，所以没有必要提供迭代 **值** 的能力。
