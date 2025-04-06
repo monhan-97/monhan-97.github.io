@@ -1,0 +1,78 @@
+# 展开操作符
+
+ES6 新增的 **展开操作符** 对 `集合引用类型` 特别有用。这种新特性可以让 `集合引用类型` 相互操作、复制和修改变得比较方便。
+
+实现了`Symbol.iterable`方法的集合引用类型，都可以被`展开操作符`复制。
+
+## 构造字面量数组
+
+```javascript
+const parts = ["shoulders", "knees"];
+const lyrics = ["head", ...parts, "and", "toes"];
+consol.log(lyrics);
+// ["head", "shoulders", "knees", "and", "toes"]
+```
+
+## 数组拷贝
+
+```javascript
+const arr = [1, 2, 3];
+const arr2 = [...arr]; // 类似arr.slice()。
+arr2.push(4);
+
+// arr2 此时变成 [1, 2, 3, 4]
+// arr 不受影响
+```
+
+:::warning
+展开语法和 **Object.assign()** 行为一致，执行的都是浅拷贝 (只遍历一层)。
+:::
+
+```javascript
+const a = [[1], [2], [3]];
+const b = [...a];
+
+b.shift().shift();
+
+console.log("a==>", a, ",b==>", b);
+// a==>[[], [2], [3]],b==> [[2], [3]]
+```
+
+## 连接多个数组
+
+```javascript
+const arr1 = [0, 1, 2];
+const arr2 = [3, 4, 5];
+const arr3 = [...arr1, ...arr2];
+
+console.log(arr3);
+// [0,1,2,3,4,5]
+```
+
+## 构造字面量对象
+
+```javascript
+const obj1 = { foo: "bar", x: 42 };
+const obj2 = { foo: "baz", y: 13 };
+
+const clonedObj = { ...obj1 };
+// 克隆后的对象：{ foo: "bar", x: 42 }
+
+const mergedObj = { ...obj1, ...obj2 };
+// 合并后的对象：{ foo: "baz", x: 42, y: 13 }
+```
+
+## 只能用于可迭代对象
+
+在数组或函数参数中使用展开语法时，该语法只能用于 **可迭代对象**:
+
+```javascript
+const obj = { key1: "value1" };
+const array = [...obj]; // TypeError: obj is not iterable
+```
+
+## [Map 拷贝/合并](./map.mdx#复制-maps)
+
+## [Set 拷贝/合并](./set.mdx#复制-set)
+
+## [自定义 Symbol.iterator](../data-type/internal-symbol#symboliterator)

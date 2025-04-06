@@ -90,6 +90,7 @@ const sidebars: SidebarsConfig = {
             "Javascript/collection-reference-types/weak-map",
             "Javascript/collection-reference-types/set",
             "Javascript/collection-reference-types/weak-set",
+            "Javascript/collection-reference-types/spread-operator",
           ],
         },
       ],
