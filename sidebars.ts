@@ -93,6 +93,11 @@ const sidebars: SidebarsConfig = {
             "Javascript/collection-reference-types/spread-operator",
           ],
         },
+        {
+          type: "category",
+          label: "工作者线程",
+          items: ["Javascript/web-worker/introduce"],
+        },
       ],
     },
     {

@@ -1,0 +1,97 @@
+# 简介
+
+**Javascript** 是一门 **单线程** 的语言。
+
+**单线程** 就意味着不能像其他 **单线程** 语言那样把工作委托给其他线程或进程处理。
+
+所以这也是 **工作者线程** 的价值所在: 允许把主线程的工作委托给其他线程，但是不会改变现有单线程的模型。
+
+## 工作者线程
+
+浏览器每打开一个页面，就会分配一个属于它自己的环境。这样，每个页面都有自己的**内存**,**事件循环**,**DOM** 等等。
+
+这样每个页面就相当于是一个**沙盒环境**，不会干扰其他页面。
+
+使用 **工作者线程** 的时候,浏览器会在原始页面环境之外再分配一个 **完全独立** 的二级子环境。
+这个子环境不依赖主线程的交互操作 API(比如 DOM)。
+
+## 工作者线程和线程
+
+- **工作者线程 不一定在同一个进程里**
+
+  通常, 一个 **进程** 可以在内部创建多个 **线程**, 根据**浏览器引擎**的实现, **工作者线程** 可能与页面属于同一**进程**,也可能不属于。
+
+  例如: **Chrome** 的 **Blink** 引擎对 **共享者工作线程(SharedWorker)** 和 **服务工作者线程(ServiceWorker)** 使用的是独立的 **进程**。
+
+- 创建 **工作者线程** 的开销更大
+
+  **工作者线程** 有自己独立的**事件循环**, **全局对象**、**事件处理程序**。所以 **工作者线程** 相对来说比较重。
+  启动成本比较高 每个实例占用的内存也会比较多。
+
+## 工作者线程的类型
+
+`Web工作者线程规范` 中定义了三种主要的 **工作者线程** : **专用工作者线程(Worker)** , **共享者工作线程(SharedWorker)** , 和**服务工作者线程(ServiceWorker)**。
+
+- **专用工作者线程(Worker)**
+
+  - 创建一个 **Javascript 线程** 可以委托执行相关的任务。
+
+  - 只能被创建它的页面使用。
+
+- **共享工作者线程(SharedWorker)**
+
+  - 和 **专用工作者线程(Worker)** 非常相似。
+
+  - 区别是 **共享工作者线程(SharedWorker)** 可以被不同的 **上下文** 使用,包括不同的 **标签页**。
+
+  - 任何创建 **共享工作者线程(SharedWorker)** 的同源脚本, 都可以向 **共享工作者线程(SharedWorker)** 发送消息或从中接受消息
+
+- **服务工作者线程(ServiceWorker)**
+
+  - 主要用途是拦截、重定向、修改页面发出的请求。
+
+## WorkerGlobalScope
+
+在网页中, `window` 对象 可以向运行在其中的脚本暴露各种全局变量。在 **工作者线程** 内部没有 `window` 的概念。
+取而代之的是 `WorkerGlobalScope` 的实例。通过`self`关键字暴露出来。
+
+```Javascript
+// 获取 worker 全局作用域的引用
+self; // 等同于 WorkerGlobalScope 实例
+
+self.name; // worker 的名称
+self.location; // 类似 window.location，但只读
+self.navigator; // 类似 window.navigator
+self.performance; // 性能测量API
+```
+
+### 属性和方法
+
+- **navigator**: 返回与 **工作者线程** 关联的 `WorkerNavigator`。
+- **self**: 返回与 `WorkerGlobalScope` 对象。
+- **location**: 返回与 **工作者线程** 关联的 `WorkerLocation` 。
+- **performance**: 返回(只包含特定属性和方法的) `Performance` 对象。
+- **console**: 返回与 **工作者线程** 关联的 `Console`对象。
+- **caches**: 返回与 **工作者线程** 关联的 `CacheStorage` 对象。
+- **indexDB**: 返回 `IDBFactory` 对象。
+- **isSecureContext**: 返回布尔值, 表示工作者上下文是否安全。
+- **origin**: 返回 `WorkerGlobalScope` 的源。
+
+类似地，`self` 对象上暴露的一些方法也是 `window` 上方法的子集。 这些`self`上的方法与`window`上对应的方法操作和功能一样。
+
+- **atob()**
+- **btoa()**
+- **clearInterval()**
+- **clearTimeout()**
+- **clearImageBitMap()**
+- **fetch()**
+- **setInterval()**
+- **setTimeout()**
+
+### WorkerGlobalScope 的子类
+
+每种类型的 **工作者线程** 都使用了自己特定的全局对象 继承自 `WorkerGlobalScope`。
+
+1. **专用工作者线程(Worker)** 使用 `DedicatedWorkerGlobalScope`
+2. **共享工作者线程(SharedWorker)** 使用 `SharedWorkerGlobalScope`
+3. **服务工作者线程(ServiceWorkerGlobalScope)** 使用 `ServiceWorkerGlobalScope`
