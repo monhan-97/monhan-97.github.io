@@ -1,0 +1,262 @@
+# 专用工作者线程
+
+可以在网页中创建 **专用工作者线程** 用来执行在 **浏览器主线程** 之外的其他任务。
+
+我们可以在 **专用工作者线程** 中与 **父页面** 交换消息、发送网络请求、执行文件输入/输出、进行密集计算、处理大量数据。
+
+## 专用工作者线程的基本概念
+
+### 创建专用工作者线程
+
+创建 **专用工作者线程** 最常见的方式是 **加载 Javascript 文件**。把 **文件路径** 提供给 **Worker** 构造函数。
+
+然后 构造函数 再在后台异步加载脚本并且实例化 **工作者线程**。
+
+```Javascript title='emptyWorker.js'
+// 空的 JS 工作者线程文件
+```
+
+```Javascript title='main.js'
+const worker = new Worker('./emptyWorker.js');
+console.log(worker) {}
+//可能还没有初始化完成
+```
+
+### 工作者线程安全限制
+
+工作者线程的 **Javascript 文件** 只能从父页面相同的源加载。 从其他源加载工作者线程的脚本文件会导致错误。
+
+```Javascript
+const worker = new Worker(new URL("./workers/test.worker", import.meta.url));
+
+// 尝试基于 https://www.baidu.com  创建工作者线程
+const worker2 = new Worker(new URL("https://www.baidu.com/workers/test.worker", import.meta.url));
+
+// Access to script at 'https://www.baidu.com/workers/test.worker' from origin 'https://local.innodealing.com:8000'
+// has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+```
+
+### 使用 Worker 对象
+
+`Worker()` 构造函数返回的 `Worker 对象`, 是与刚创建的 **专用工作者线程** 通信的连接点。
+
+它可用于 **工作者线程** 和 **父上下文** 间传输信息, 以及捕获 **专用工作者线程** 发出的事件。
+
+`Worker 对象` 支持下列事件处理程序属性:
+
+- onerror: 在 **工作者线程** 中发生 ErrorEvent 类型的错误事件时触发该事件
+
+  - 该事件在 **工作者线程** 中抛出错误的时候触发。
+  - 该事件也可以通过 worker.addEventListener('error', handler) 的形式处理
+
+- onmessage: 在 **工作者线程** 中发生 MessageEvent 类型的消息事件时触发该事件
+
+  - 该事件在 **工作者线程** 中向父上下文发送消息触发。
+    - 该事件也可以通过 worker.addEventListener('message', handler) 的形式处理
+
+- onmessageerror: 在 **工作者线程** 中发生 MessageEvent 类型的错误事件时触发该事件
+
+  - 该事件在 **工作者线程** 中收到 无法反序列化的消息时发生
+  - 该事件也可以通过 worker.addEventListener('messageerror', handler) 的形式处理。
+
+`Worker 对象` 此外还支持下列方法:
+`postMessage()`: 用于通过异步消息事件向 **工作者线程** 发送消息。
+`terminate()`: 用于立即终止 **工作者线程**
+
+### DedicatedWorkerGlobalScope
+
+在专用工作者线程内部，全局作用域是 `DedicatedWorkerGlobalScope` 。
+
+因为继承自 `WorkerGlobalScope`,所以包含它的所有属性和方法。工作者线程可以通过 **self** 关键字访问。
+
+```Javascript title='globalScopeWorker.js'
+console.log('inside worker:', self);
+```
+
+```Javascript title='main.js'
+const worker = new Worker('./globalScopeWorker.js');
+
+console.log('created worker:', worker);
+
+// created worker: Worker {}
+
+// inside worker: DedicatedWorkerGlobalScope {}
+```
+
+`main.js` 和 **工作者线程** 中的 `console` 对象 都会写入浏览器控制台。
+
+`DedicatedWorkerGlobalScope` 在 `WorkerGlobalScope` 基础上增加了以下方法:
+
+- **postMessage()**: 从工作者线程内部向主线程上下文发送消息。
+
+- **close()**: 用于立即终止 **工作者线程**。
+
+- **importScripts(path)**: 用于向工作者线程中导入任意数量的脚本。
+
+### 专用工作者线程的生命周期
+
+调用 **Worker()** 构造函数 是一个专用工作者线程的一个入口。
+
+调用之后 主线程中虽然可以立即使用这个 `Worker 对象`，但是与之关联的 **工作者线程** 可能还没有创建完成。因为存在脚本请求的 **网络延迟** 和 **初始化延迟**。
+一般来说，专用工作者线程 非正式区分三种状态:
+
+- **初始化(initializing)**
+- **活动(active)**
+- **终止(terminated)**
+
+这三种状态对其他线程是不可见的, 也无法分别 `Worker 对象` 当前所处的一个状态。
+
+初始化的时候 虽然 **工作者线程** 的脚本尚未执行 但是可以先把要发送给 **工作者线程** 的消息加入**队列**。
+
+这些消息会等待 **工作者线程** 的状态变为**活动**, 在执行消息队列里面的代码。
+
+```Javascript title='initializingWorker.js'
+self.addEventListener('message', ({data}) => console.log(data));
+
+// foo
+// bar
+// baz
+```
+
+```Javascript title='main.js'
+const worker = new Worker('./initializingWorker.js');
+
+// Worker 可能仍处于初始化状态
+// 但 postMessage()数据可以正常处理
+worker.postMessage('foo');
+worker.postMessage('bar');
+worker.postMessage('baz');
+```
+
+创建之后 **专用工作者线程** 就会伴随页面的整个生命周期存在 除非手动调用 **close 方法** 。
+
+### 内部终止和外部终止的区别
+
+#### 内部终止
+
+```Javascript title='closeWorker.js'
+self.postMessage('foo');
+self.postMessage("foo");
+self.close();
+self.postMessage("bar1");
+self.postMessage("bar2");
+self.postMessage("bar3");
+self.postMessage("bar4");
+self.postMessage("bar5");
+self.postMessage("bar6");
+self.postMessage("bar7");
+self.postMessage("bar8");
+setTimeout(() => self.postMessage("baz"), 0);
+```
+
+```Javascript
+const worker = new Worker('./closeWorker.js');
+
+worker.onmessage = ({data}) => console.log(data);
+
+// foo
+// bar
+// bar1
+// bar2
+// bar3
+// bar4
+// bar5
+// bar6
+// bar7
+// bar8
+```
+
+虽然调用了 **close()** 但显然 **工作者线程** 的执行并没有立即终止。
+
+**close()** 在这里会通知 **工作者线程** 取消事件循环中的所有任务 **阻止继续添加新任务**。
+
+**工作者线程** 不需要执行同步停止 因此在 **父上下文** 的事件循环中处理的其他数据仍会打印出来。
+
+#### 外部终止
+
+```Javascript title='terminateWorker.js'
+self.onmessage = ({data}) => console.log(data);
+```
+
+```Javascript title='main.js'
+const worker = new Worker('./terminateWorker.js');
+
+// 给 1000 毫秒让工作者线程初始化
+setTimeout(() => {
+    worker.postMessage('foo');
+    worker.terminate();
+    worker.postMessage('bar');
+    setTimeout(() => worker.postMessage('baz'), 0);
+}, 1000);
+
+//foo
+```
+
+**父上下文** 先给 **工作者线程** 发送了带`foo`的`postMessage` 这条消息可以在外部终止之前处理。
+
+一旦调用了 **terminate()** 工作者线程的 **消息队列** 就会被清理并锁住。它会将关联的**工作者线程**标记为终止, 它们的执行也会**立即停止**。
+
+## 在 JavaScript 行内创建工作者线程
+
+**工作者线程** 需要基于脚本文件来创建, 但这并不意味着脚本必须是远程资源。
+
+**专用工作者线程** 也可以通过 **Blob 对象** URL 在行内脚本创建。这样可以更快速地初始化**工作者线程**。因为没有网络延迟。
+
+```JavaScript
+const workerScript = `
+self.onmessage = ({data})=>{
+  console.log(data)
+}
+`
+
+const workerScriptBlob = new Blob([workerScript])
+
+
+const workerScriptBlobUrl = URL.createObjectURL(workerScriptBlob);
+
+const worker = new Worker(workerScriptBlobUrl);
+
+worker.postMessage('blob worker script')
+
+// blob worker script
+```
+
+在这个例子中:
+
+- 通过脚本字符串创建了 **Blob**。
+- 在通过**Blob**创建了对象 URL。
+- 最后把对象 URL 传给了`Worker()`构造函数。
+
+## 在工作者线程中动态执行脚本
+
+在 **工作者线程** 中 , 可以使用`importScripts()` 方法通过 **编程方式** 加载 **执行任意脚本**。
+
+```JavaScript title='main.js'
+const worker = new Worker('./worker.js')
+```
+
+```JavaScript title='scriptA.js'
+console.log('scriptA executes')
+```
+
+```JavaScript title='scriptB.js'
+console.log('scriptB executes')
+```
+
+```JavaScript title='worker.js'
+console.log('importing scripts');
+
+importScripts('./scriptA.js');
+importScripts('./scriptB.js');
+
+console.log('scripts imported');
+
+// importing scripts
+// scriptA executes
+// scriptB executes
+// scripts imported
+```
+
+`importScripts()` 方法可以接收任意数量的脚本作为参数, 浏览器下载它们的顺序没有限制。
+
+但是执行则会**严格**按照它们在**参数列表的顺序**进行。
