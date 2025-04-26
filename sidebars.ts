@@ -96,7 +96,10 @@ const sidebars: SidebarsConfig = {
         {
           type: "category",
           label: "工作者线程",
-          items: ["Javascript/web-worker/introduce"],
+          items: [
+            "Javascript/web-worker/introduce",
+            "Javascript/web-worker/worker",
+          ],
         },
       ],
     },
