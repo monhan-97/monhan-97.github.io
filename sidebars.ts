@@ -105,6 +105,16 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: "category",
+      label: "数据结构",
+      link: {
+        type: "generated-index",
+        slug: "/data-structure",
+        keywords: ["Javascript"],
+      },
+      items: ["data-structure/linkList"],
+    },
+    {
+      type: "category",
       label: "计算机网络",
       link: {
         type: "generated-index",
