@@ -4,7 +4,10 @@ class LinkList<T> {
 
   private length: number = 0;
 
-  constructor() {}
+  constructor(value?: T) {
+    // this.head = value === undefined ? new Node(0) : new Node(value);
+    // this.length = 1;
+  }
 
   /**
    * 添加链表内容

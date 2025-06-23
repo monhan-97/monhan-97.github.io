@@ -111,7 +111,7 @@ const sidebars: SidebarsConfig = {
         slug: "/data-structure",
         keywords: ["Javascript"],
       },
-      items: ["data-structure/linkList"],
+      items: ["data-structure/linkList", "data-structure/binaryTree"],
     },
     {
       type: "category",
