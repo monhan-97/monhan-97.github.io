@@ -1,0 +1,177 @@
+# 迭代器
+
+## 理解迭代
+
+在`Javascript`中,计数循环就是一种最简单的迭代。
+
+```Javascript
+for (let index = 0; index <= 10; index++) {
+   console.log(index)
+}
+```
+
+循环是`迭代机制`的基础 这是因为它可以指定迭代的次数，以及每次迭代要执行什么操作。
+
+迭代会在有序集合上进行 数组是`Javascript`中有序集合的最典型例子
+
+```Javascript
+const collection = ['foo',"bar",'baz']
+for (let index = 0; index < collection.length; index++) {
+   console.log(collection[index])
+}
+```
+
+因为数组有已知的长度, 并且数组每一项都可以通过索引获取。 所以整个数组可以通过递增索引来遍历。
+
+**由于如下原因** : 通过这种循环来执行代码并不理想。
+
+- **迭代之前需要事先知道如何使用数据结构**
+
+  数组中的`每一项`都只能先通过引用取得数组对象,然后在通过`[]`操作符取得特定索引位置上的项。
+
+- **遍历顺序并不是数据结构固有的**
+
+  通过`递增索引量` 适用于访问数组, 并不适用于其他数据结构。
+
+ES6 新增了 `Array.prototype.forEach()` 方法 向通用迭代需求 迈进了一步(但是仍然不够理想);
+
+解决了`单独记录索引`和通过`数组对象`取值的问题。但是没有办法标识迭代何时终止。回调结构也比较笨拙
+
+```Javascript
+const collection = ['foo',"bar",'baz']
+collection.forEach((item)=>{
+    console.log(item)
+})
+```
+
+## 迭代器模式
+
+**迭代器模式** 描述了一个方案,可以把有些结构称为 `可迭代对象(iterable)`, 因为它们实现了正式的 `Iterable 接口`。
+并且可以通过 `Iterator 迭代器` 消费 。
+
+任何实现 `Iterable 接口` 的数据结构 , 都可以被实现`Iterable 接口`的结构消费。
+
+`迭代器(iterator)` 是按需创建的一次性对象，每个迭代器都会关联一个 **可迭代对象**。
+
+`迭代器(iterator)` 会暴露迭代其关联 `可迭代对象(iterable)` 的 API。
+
+迭代器无需了解与其关联的 `可迭代对象(iterable)` 的结构 只需要知道如何取得连续的值。
+
+```
+可迭代对象(Iterable)
+   │
+   ↓ 调用 [Symbol.iterator]()
+迭代器(Iterator)
+   │
+   ↓ 调用 next()
+迭代结果 { value, done }
+```
+
+### 可迭代协议
+
+实现 `Iterable 接口` 要求同时具备两种能力:
+
+- 只要对象实现了 **`[Symbol.iterator]()`** 方法
+- 同时该方法必须返回一个 **迭代器对象**。
+
+很多内置类型都实现了 `Iterable 接口`:
+
+- **字符串**
+- **数组**
+- **Map**
+- **Set**
+- **arguments 对象**
+- **NodeList 等 DOM 集合对象**
+
+检查对象是否存在默认 `迭代器属性` 可以使用暴露这个`工厂函数`
+
+```Javascript
+let num = 1;
+let obj = {};
+
+console.log(num[Symbol.iterator]); // undefined
+console.log(obj[Symbol.iterator]); // undefined
+
+let str = 'abc';
+let arr = ['a','b','c'];
+let map = new Map([
+    ['a',1],
+    ['b',2],
+    ['c',3]
+])
+let set = new Set(['a','b','c']);
+let nodeList = document.querySelectorAll('div');
+
+console.log(str[Symbol.iterator]); // ƒ [Symbol.iterator]() { [native code] }
+console.log(arr[Symbol.iterator]); // f values() { [native code ]}
+console.log(map[Symbol.iterator]); // ƒ entries() { [native code] }
+console.log(set[Symbol.iterator]); // f values() { [native code ]}
+console.log(nodeList[Symbol.iterator]); // f values() { [native code ]}
+
+// 调用这个工厂函数会生成一个迭代器
+console.log(str[Symbol.iterator]()); // StringIterator
+console.log(arr[Symbol.iterator]()); // Array Iterator
+console.log(map[Symbol.iterator]()); // MapIterator
+console.log(set[Symbol.iterator]()); // SetIterator
+console.log(nodeList[Symbol.iterator]()); // Array Iterator
+```
+
+实际在写代码过程中, 不需要显示调用这个工厂函数来生成`迭代器`, 实现`可迭代协议`的所有类型都会自动兼容接收 `可迭代对象` 的任何语言特性。
+
+接收 `可迭代对象` 的原生语言特性包括:
+
+- **for-of 语法**
+- **数组解构**
+- **扩展操作符**
+- **Array.from()**
+- **创建集合**
+- **创建映射**
+- **Promise.all() 接收由 Promise 组成的可迭代对象**
+- **Promise.race() 接收由 Promise 组成的可迭代对象**
+- **`yield*` 在生成器中使用**
+
+这些原生语言结构都会在后台调用提供的`可迭代对象`的这个工厂函数。从而创建一个迭代器:
+
+```Javascript
+let arr = ['a','b','c'];
+
+for (const element of arr) {
+    console.log(element)
+}
+// a
+// b
+// c
+
+let [a,b,c] = arr
+console.log(a,b,c)
+// a, b, c
+
+let arr2 = [...arr];
+console.log(arr2)
+// ['a','b','c']
+
+// Array.from()
+let arr3 =  Array.from(arr);
+console.log(arr3)
+// ['a','b','c']
+
+let set = new Set(arr);
+console.log(set)
+// Set(3){'a','b','c'}
+```
+
+如果对象原型链上的父类实现了 `Iterable 接口` , 那么这个对象也就实现了这个接口。
+
+```Javascript
+class Foo extends Array {}
+
+const newFooArr =  new Foo('foo','bar','baz');
+
+for (const element of newFooArr) {
+ console.log(element)
+}
+
+// foo
+// bar
+// baz
+```
