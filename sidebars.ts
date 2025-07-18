@@ -96,7 +96,10 @@ const sidebars: SidebarsConfig = {
         {
           type: "category",
           label: "生成器和迭代器",
-          items: ["Javascript/iterator-and-generator/iterator"],
+          items: [
+            "Javascript/iterator-and-generator/iterator",
+            "Javascript/iterator-and-generator/generator",
+          ],
         },
         {
           type: "category",

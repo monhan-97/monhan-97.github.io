@@ -1,0 +1,103 @@
+# 生成器
+
+`Javascript` 语言内置了生成器`(generator)`这个概念，生成器是一个函数，可以暂停执行，然后恢复执行。
+
+## 生成器基础
+
+- `生成器函数` 用 `function*` 定义，`*` 表示 `生成器函数` 。
+- `生成器函数` 返回一个 `迭代器(iterator)`。 调用 `next()` 方法, `生成器函数`会恢复执行, 并返回一个 `迭代器对象` 。
+
+:::warning
+箭头函数没有 **this、arguments、super 、new.target**,
+所以不能使用箭头函数定义生成器函数
+:::
+
+```Javascript
+//  生成器函数声明
+function* generatorFn() {}
+
+let generatorFn = function* () {}
+
+let foo = {
+    * generatorFn() {}
+}
+
+// 作为类实例方法的生成器函数
+class Foo {
+    * generatorFn() {}
+}
+
+// 作为类静态方法的生成器函数
+class Bar {
+    static * generatorFn() {}
+}
+```
+
+调用生成器函数会产生一个 **生成器对象**。 `生成器对象` 一开始处于 `暂停执行的状态(suspended)`。
+
+与迭代器相似，生成器对象也实现了 `Iterable` 接口，因此具有 `next()` 方法。
+
+调用这个方法会让 `生成器` 开始或者 恢复执行。
+
+```javascript
+function* generatorFn() {}
+
+const g = generatorFn();
+
+console.log(g); // generatorFn{<suspended>}
+
+console.log(g.next); // f next() { [native code] }
+```
+
+`next()` 方法的返回值 类似于 `迭代器`, 有一个 `done`属性和一个 `value` 属性。
+
+函数体的为空的生成器中间不会停留, 除非碰到 `yield` 语句 。
+
+调用一次 `next()` 方法, 就会让 `生成器` 到达 `done:true` 状态 。
+
+```javascript
+function* generatorFn() {}
+
+const g = generatorFn();
+
+console.log(g.next()); // {value: undefined, done: true}
+```
+
+`value` 属性是生成器的返回值, 默认值为 `undefined`。 可以通过`生成器`函数的返回值指定
+
+```javascript
+function* generatorFn() {
+  return 123;
+}
+
+const g = generatorFn();
+
+console.log(g.next()); // { value: 123, done: true}
+```
+
+生成器函数 只会在初次调用 `next()` 方法后开始执行 如下所示:
+
+```javascript
+function* generatorFn() {
+  console.log("Generator function body");
+}
+
+const g = generatorFn();
+
+g.next(); // Generator function body;
+```
+
+生成器对象实现了 `Iterator` 接口。
+
+```javascript
+function* generatorFn() {}
+
+console.log(generatorFn); // f* generatorFn() {}
+console.log(generatorFn()[Symbol.iterator]); // f [Symbol.iterator]() { native code } }
+
+const g = generatorFn();
+
+console.log(g === g[Symbol.iterator]()); // true
+```
+
+## 通过 yield 中断执行
